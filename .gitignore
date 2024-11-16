@@ -1,0 +1,10 @@
+__pycache__/
+
+# Python packaging
+/build/
+/dist/
+*.egg-info/
+
+# Python testing
+/.tox/
+/.coverage
