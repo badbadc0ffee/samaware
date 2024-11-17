@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "samaware"
+description = "pretalx plugin with enhanced features for speaker care during a conference"
+keywords = ["pretalx"]
+dynamic = ["version"]
+authors = [
+  {name = "Felix Dreissig", email = "f30@f30.me"},
+]
+license = {text = "ISC"}
+readme = "README.md"
+
+dependencies = []
+
+[project.urls]
+homepage = "https://github.com/f30/samaware"
+repository = "https://github.com/f30/samaware.git"
+Issues = "https://github.com/f30/spam/issues"
+
+[options.packages.find]
+where = "src"
+
+[tool.setuptools.dynamic]
+version = {attr = "samaware.__version__"}
+
+[project.entry-points."pretalx.plugin"]
+samaware = "samaware:PretalxPluginMeta"
