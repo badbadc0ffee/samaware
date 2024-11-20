@@ -1,0 +1,86 @@
+{% extends "orga/base.html" %}
+
+{% load compress %}
+{% load i18n %}
+{% load static %}
+
+{% block stylesheets %}
+{% compress css %}
+{# Order of the stylesheets is relevent here (the later, the more precedence) #}
+<link rel="stylesheet" href="{% static 'orga/css/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'samaware/samaware.css' %}">
+{% endcompress %}
+{% endblock stylesheets %}
+
+{% block extra_title %}SamAware :: {% endblock extra_title %}
+
+{% block content %}
+<h2>SamAware</h2>
+
+<div class="dashboard-list">
+    <div class="dashboard-block-wrapper">
+        <div class="dashboard-block">
+            <h1>{{ arrived_speakers.count }} / {{ total_speakers.count }}</h1>
+            <div class="dashboard-description">
+                {% translate 'speakers arrived' %}
+            </div>
+        </div>
+    </div>
+    <div class="dashboard-block-wrapper">
+        <a href="/todo" class="dashboard-block dashboard-block-success">
+            <h1>{{ sessions_missing_speakers.count }}</h1>
+            <div class="dashboard-description">
+                {% translate 'sessions missing speakers in the next 4 hours' %}
+            </div>
+        </a>
+    </div>
+    <div class="dashboard-block-wrapper">
+        <a href="{% url 'orga:schedule.release' event=request.event.slug %}" class="dashboard-block dashboard-block-warning">
+            <h1>{{ unreleased_changes.count }}</h1>
+            <div class="dashboard-description">
+                {% translate 'unreleased schedule changes' %}
+            </div>
+        </a>
+    </div>
+    <div class="dashboard-block-wrapper">
+        <a href="/todo" class="dashboard-block">
+            <h1>1</h1>
+            <div class="dashboard-description">
+                {% translate 'speaker care notes' %}
+            </div>
+        </a>
+    </div>
+    <div class="dashboard-block-wrapper">
+        <a href="/todo" class="dashboard-block dashboard-block-extended">
+            <h1>0</h1>
+            <div class="dashboard-description">
+                {% translate 'tech riders' %}
+            </div>
+        </a>
+        <div class="dashboard-block-extension">
+            <div class="dashboard-block-addon dashboard-block-addon-info">
+                {% trans 'next 4 hours' %}: 0
+            </div>
+            <a href="/todo" class="dashboard-block-addon dashboard-block-addon-success">
+                {% trans 'unsynced' %}: 0
+            </a>
+        </div>
+    </div>
+    <div class="dashboard-block-wrapper">
+        <a href="/todo" class="dashboard-block dashboard-block-extended">
+            <h1>6</h1>
+            <div class="dashboard-description">
+                {% translate 'sessions without recording' %}
+            </div>
+        </a>
+        <div class="dashboard-block-extension">
+            <div class="dashboard-block-addon dashboard-block-addon-info">
+                {% trans 'next 4 hours' %}: 0
+            </div>
+            <a href="/todo" class="dashboard-block-addon dashboard-block-addon-error">
+                {% trans 'without tech rider' %}: 5
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock content %}

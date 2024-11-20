@@ -23,6 +23,9 @@ Issues = "https://github.com/f30/spam/issues"
 [options.packages.find]
 where = "src"
 
+[tool.setuptools.package-data]
+"*" = ["*.html", "*.css"]
+
 [tool.setuptools.dynamic]
 version = {attr = "samaware.__version__"}
 
