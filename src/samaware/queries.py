@@ -1,5 +1,4 @@
 from django.utils import timezone
-
 from pretalx.person.models import SpeakerProfile
 from pretalx.submission.models import SubmissionStates
 

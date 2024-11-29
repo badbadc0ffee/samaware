@@ -1,15 +1,14 @@
 from django.dispatch import receiver
 from django.urls import resolve, reverse
-
 from pretalx.orga.signals import nav_event
 
 import samaware
 
 
 @receiver(nav_event, dispatch_uid='samaware_nav')
-def navbar_info(sender, request, **kwargs):
+def navbar_info(sender, request, **kwargs):  # noqa: ARG001, pylint: disable=W0613
 
-    if not request.user.has_perm(samaware.required_permissions, request.event):
+    if not request.user.has_perm(samaware.REQUIRED_PERMISSIONS, request.event):
         return []
 
     url = resolve(request.path_info)

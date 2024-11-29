@@ -15,6 +15,9 @@ readme = "README.md"
 
 dependencies = []
 
+[project.optional-dependencies]
+dev = ["ruff", "pylint"]
+
 [project.urls]
 homepage = "https://github.com/f30/samaware"
 repository = "https://github.com/f30/samaware.git"
@@ -31,3 +34,47 @@ version = {attr = "samaware.__version__"}
 
 [project.entry-points."pretalx.plugin"]
 samaware = "samaware:PretalxPluginMeta"
+
+
+[tool.ruff]
+line-length = 109
+exclude = ["migrations"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+  "ANN", "C90", "COM", "D1", "D200", "D202", "D203", "D205", "D212", "DJ006", "DJ007", "EM", "FBT", "FIX",
+  "N818", "PERF203", "PLR", "PLW0603", "PTH", "RET", "RUF012", "RSE", "S308", "S311", "S603", "T20", "TD",
+  "TRY"
+]
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = "single"
+multiline-quotes = "single"
+docstring-quotes = "double"
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+
+[tool.pylint.main]
+# Use as many jobs as available CPU cores
+jobs = 0
+ignore = ["migrations"]
+
+[tool.pylint.reports]
+reports = false
+
+[tool.pylint."messages control"]
+disable = [
+  "design", "too-many-nested-blocks", "fixme", "global-statement", "missing-docstring", "no-else-return",
+  "duplicate-code", "consider-using-with", "broad-exception-raised", "locally-disabled"
+]
+good-names = ["e", "f", "fd", "i", "ip", "j", "k", "_"]
+
+[tool.pylint.format]
+max-line-length = 109
+expected-line-ending-format = "LF"
+
+[tool.pylint.spelling]
+generated-members = ["objects", "id", "request", "DoesNotExist"]

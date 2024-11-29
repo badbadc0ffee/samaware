@@ -1,7 +1,6 @@
 import datetime
 
 from django.views.generic.base import TemplateView
-
 from pretalx.common.views.mixins import EventPermissionRequired
 
 import samaware
@@ -11,7 +10,7 @@ from . import queries
 
 class DashboardView(EventPermissionRequired, TemplateView):
 
-    permission_required = samaware.required_permissions
+    permission_required = samaware.REQUIRED_PERMISSIONS
     template_name = 'samaware/dashboard.html'
 
     def get_context_data(self, **kwargs):
