@@ -3,6 +3,7 @@
 {% load compress %}
 {% load i18n %}
 {% load static %}
+{% load samaware_extras %}
 
 {% block stylesheets %}
 {% compress css %}
@@ -27,7 +28,7 @@
         </div>
     </div>
     <div class="dashboard-block-wrapper">
-        <a href="/todo" class="dashboard-block dashboard-block-success">
+        <a href="/todo" class="dashboard-block dashboard-block-{{ sessions_missing_speakers.count | count_class }}">
             <h1>{{ sessions_missing_speakers.count }}</h1>
             <div class="dashboard-description">
                 {% translate 'sessions missing speakers in the next 4 hours' %}
@@ -35,7 +36,7 @@
         </a>
     </div>
     <div class="dashboard-block-wrapper">
-        <a href="{% url 'orga:schedule.release' event=request.event.slug %}" class="dashboard-block dashboard-block-warning">
+        <a href="{% url 'orga:schedule.release' event=request.event.slug %}" class="dashboard-block dashboard-block-{{ unreleased_changes.count | count_class }}">
             <h1>{{ unreleased_changes.count }}</h1>
             <div class="dashboard-description">
                 {% translate 'unreleased schedule changes' %}
