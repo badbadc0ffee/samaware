@@ -1,0 +1,978 @@
+[
+{
+  "model": "event.event",
+  "pk": 1,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "name": "{\"en\": \"SamAwareCon\"}",
+    "slug": "samawarecon",
+    "organiser": 2,
+    "is_public": true,
+    "date_from": "2024-11-17",
+    "date_to": "2099-12-31",
+    "timezone": "Europe/Berlin",
+    "email": "campbelldonald@example.org",
+    "custom_domain": null,
+    "feature_flags": {
+      "show_schedule": true,
+      "show_featured": "pre_schedule",
+      "show_widget_if_not_public": false,
+      "export_html_on_release": false,
+      "use_tracks": true,
+      "use_feedback": true,
+      "present_multiple_times": false,
+      "submission_public_review": true
+    },
+    "display_settings": {
+      "schedule": "grid",
+      "imprint_url": "",
+      "header_pattern": "",
+      "html_export_url": "",
+      "meta_noindex": false,
+      "texts": {
+        "agenda_session_above": "",
+        "agenda_session_below": ""
+      }
+    },
+    "review_settings": {
+      "score_mandatory": false,
+      "text_mandatory": false,
+      "aggregate_method": "median",
+      "score_format": "words_numbers"
+    },
+    "mail_settings": {
+      "mail_from": "",
+      "reply_to": "",
+      "signature": "",
+      "subject_prefix": "",
+      "smtp_use_custom": "",
+      "smtp_host": "",
+      "smtp_port": 587,
+      "smtp_username": "",
+      "smtp_password": "",
+      "smtp_use_tls": "",
+      "smtp_use_ssl": "",
+      "mail_on_new_submission": false
+    },
+    "primary_color": "#aeedcc",
+    "custom_css": "",
+    "logo": "",
+    "header_image": "",
+    "locale_array": "en",
+    "content_locale_array": "en",
+    "locale": "en",
+    "accept_template": null,
+    "ack_template": null,
+    "reject_template": null,
+    "update_template": null,
+    "question_template": null,
+    "landing_page_text": "{\"en\": \"# Welcome to SamAwareCon!\\r\\n\\r\\We will be presenting the recent developments around our Pretalx plugin.\\r\\n\\r\\nThis event exists for testing purposes only. It is a demo, and it is only a demo.\"}",
+    "featured_sessions_text": "{}",
+    "plugins": "samaware"
+  }
+},
+{
+  "model": "event.organiser",
+  "pk": 2,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "name": "SamAwareCon Org",
+    "slug": "samawareconorg"
+  }
+},
+{
+  "model": "person.speakerprofile",
+  "pk": 1,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "user": 2,
+    "event": 1,
+    "biography": "Thousand guy born matter system hard plant music. Natural need side central whether. What coach have much million care. Well inside contain Mrs.\n\nStart them PM sense. Relationship local ask.\nSpeech herself today final matter analysis. Two start former our good my up bag.",
+    "has_arrived": false
+  }
+},
+{
+  "model": "person.speakerprofile",
+  "pk": 2,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "user": 3,
+    "event": 1,
+    "biography": "Arm stop fact fly bar song process.\nThat successful senior strong why report mission nor. Make past join. Accept so avoid camera.\n\nAgainst ground least building would major friend. Choose drug term attorney.",
+    "has_arrived": false
+  }
+},
+{
+  "model": "person.speakerprofile",
+  "pk": 3,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "user": 4,
+    "event": 1,
+    "biography": "Soon once information nothing. Since agency one clearly a force. Record opportunity black their. Traditional see happen possible seem be.\n\nOwner per along detail beautiful simple research. Short pattern smile far.\nTheir marriage interesting institution feel prevent. Purpose shoulder eight use.",
+    "has_arrived": false
+  }
+},
+{
+  "model": "person.speakerprofile",
+  "pk": 4,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "user": 5,
+    "event": 1,
+    "biography": "Wind research spend change. Sea serve near ground tell direction huge. Around color may challenge.\nLevel into road will. Team daughter by board put long human. Line defense move.\n\nBest herself per state. Break rather PM. There ok future box one paper address democratic. Impact treatment section.\nTravel without this hour answer land. Popular dream notice college foot sport.",
+    "has_arrived": false
+  }
+},
+{
+  "model": "person.speakerprofile",
+  "pk": 5,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "user": 6,
+    "event": 1,
+    "biography": "Place show prepare two industry many shake. Father choice his air house.\nAvoid another how just. At recent red focus argue create. Growth allow relationship everyone.\n\nListen nor thought business risk start. Whether carry note pay study. Nothing plan respond network process perform. State teach most.",
+    "has_arrived": false
+  }
+},
+{
+  "model": "person.speakerprofile",
+  "pk": 6,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "user": 7,
+    "event": 1,
+    "biography": "Strong individual they popular include sport study. Carry number out. Parent easy strong nothing.\nGround happen too admit future week.\n\nSuccess continue peace open. Buy hand natural interest.\nBook always rather say can. Through throw can reflect night turn.",
+    "has_arrived": false
+  }
+},
+{
+  "model": "person.speakerprofile",
+  "pk": 7,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "user": 8,
+    "event": 1,
+    "biography": "Art factor matter sell church a. Direction fast talk lawyer budget.\nPersonal be must pattern will. Condition tonight defense conference ball wrong.\n\nPut station general against thank analysis. Always family fear minute whom beat either. Sign live individual skin environmental hope begin.",
+    "has_arrived": false
+  }
+},
+{
+  "model": "person.user",
+  "pk": 1,
+  "fields": {
+    "password": "argon2$argon2id$v=19$m=102400,t=2,p=8$WFRhdVM4aXJjUnNtclkxRmVlc0s3ZA$/rjCMxFq2fCQLzxaivSSXPpR9FlR5nm2MwEf8sv1pzE",
+    "last_login": "2024-11-29T20:00:00.000Z",
+    "code": "JLB99Y",
+    "nick": null,
+    "name": "",
+    "email": "admin@example.org",
+    "is_active": true,
+    "is_staff": true,
+    "is_administrator": true,
+    "is_superuser": false,
+    "locale": "en",
+    "timezone": "UTC",
+    "avatar": "",
+    "avatar_thumbnail": "",
+    "avatar_thumbnail_tiny": "",
+    "get_gravatar": false,
+    "pw_reset_token": null,
+    "pw_reset_time": null,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "person.user",
+  "pk": 2,
+  "fields": {
+    "password": "!1FD0gJ7vrA1KGSyBlHuH1HC3iPP9OyN52QKWhPTi",
+    "last_login": null,
+    "code": "VX7BFD",
+    "nick": null,
+    "name": "Kelly Gutierrez",
+    "email": "simmonsalan@example.org",
+    "is_active": true,
+    "is_staff": false,
+    "is_administrator": false,
+    "is_superuser": false,
+    "locale": "en",
+    "timezone": "Europe/Berlin",
+    "avatar": "",
+    "avatar_thumbnail": "",
+    "avatar_thumbnail_tiny": "",
+    "get_gravatar": false,
+    "pw_reset_token": null,
+    "pw_reset_time": null,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "person.user",
+  "pk": 3,
+  "fields": {
+    "password": "!JQeWd83iwjcfpJuNCvlfhktqSGMXYhmO0zqNzNM6",
+    "last_login": null,
+    "code": "8XQ83W",
+    "nick": null,
+    "name": "Tammy Wong",
+    "email": "soniahurley@example.org",
+    "is_active": true,
+    "is_staff": false,
+    "is_administrator": false,
+    "is_superuser": false,
+    "locale": "en",
+    "timezone": "Europe/Berlin",
+    "avatar": "",
+    "avatar_thumbnail": "",
+    "avatar_thumbnail_tiny": "",
+    "get_gravatar": false,
+    "pw_reset_token": null,
+    "pw_reset_time": null,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "person.user",
+  "pk": 4,
+  "fields": {
+    "password": "!gQuWtmN33u41faGgzCeFzCNtFBV0P0mFV0avVLAS",
+    "last_login": null,
+    "code": "YMHFKP",
+    "nick": null,
+    "name": "Hayden Warner",
+    "email": "deanna69@example.org",
+    "is_active": true,
+    "is_staff": false,
+    "is_administrator": false,
+    "is_superuser": false,
+    "locale": "en",
+    "timezone": "Europe/Berlin",
+    "avatar": "",
+    "avatar_thumbnail": "",
+    "avatar_thumbnail_tiny": "",
+    "get_gravatar": false,
+    "pw_reset_token": null,
+    "pw_reset_time": null,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "person.user",
+  "pk": 5,
+  "fields": {
+    "password": "!uzAEh9KlvycZPkAEivTKiC69ZmNrvFSFQfGrfGRu",
+    "last_login": null,
+    "code": "AY9ALF",
+    "nick": null,
+    "name": "Adam Kline",
+    "email": "bennettandrew@example.org",
+    "is_active": true,
+    "is_staff": false,
+    "is_administrator": false,
+    "is_superuser": false,
+    "locale": "en",
+    "timezone": "Europe/Berlin",
+    "avatar": "",
+    "avatar_thumbnail": "",
+    "avatar_thumbnail_tiny": "",
+    "get_gravatar": false,
+    "pw_reset_token": null,
+    "pw_reset_time": null,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "person.user",
+  "pk": 6,
+  "fields": {
+    "password": "!F8v0DYjgMKQQMRc4bpW5ZuGQxqrLsoHdqPEneTPM",
+    "last_login": null,
+    "code": "MPPGKN",
+    "nick": null,
+    "name": "Richard Khan",
+    "email": "dustin09@example.org",
+    "is_active": true,
+    "is_staff": false,
+    "is_administrator": false,
+    "is_superuser": false,
+    "locale": "en",
+    "timezone": "Europe/Berlin",
+    "avatar": "",
+    "avatar_thumbnail": "",
+    "avatar_thumbnail_tiny": "",
+    "get_gravatar": false,
+    "pw_reset_token": null,
+    "pw_reset_time": null,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "person.user",
+  "pk": 7,
+  "fields": {
+    "password": "!vvfOlFM4HUcztaEiU0cEv6urGOwK3flS1SMtPXU3",
+    "last_login": null,
+    "code": "MDHFTU",
+    "nick": null,
+    "name": "Donna Bailey",
+    "email": "calhoundawn@example.org",
+    "is_active": true,
+    "is_staff": false,
+    "is_administrator": false,
+    "is_superuser": false,
+    "locale": "en",
+    "timezone": "Europe/Berlin",
+    "avatar": "",
+    "avatar_thumbnail": "",
+    "avatar_thumbnail_tiny": "",
+    "get_gravatar": false,
+    "pw_reset_token": null,
+    "pw_reset_time": null,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "person.user",
+  "pk": 8,
+  "fields": {
+    "password": "!6ONLLjuElMoWWZQzIFLel1swBo7RKdx5bA4PZ1FO",
+    "last_login": null,
+    "code": "ZC9Y8U",
+    "nick": null,
+    "name": "Taylor Gregory",
+    "email": "monica72@example.org",
+    "is_active": true,
+    "is_staff": false,
+    "is_administrator": false,
+    "is_superuser": false,
+    "locale": "en",
+    "timezone": "Europe/Berlin",
+    "avatar": "",
+    "avatar_thumbnail": "",
+    "avatar_thumbnail_tiny": "",
+    "get_gravatar": false,
+    "pw_reset_token": null,
+    "pw_reset_time": null,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "schedule.room",
+  "pk": 1,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "event": 1,
+    "name": "Medium Slate Blue Room",
+    "guid": null,
+    "description": null,
+    "speaker_info": null,
+    "capacity": null,
+    "position": 1
+  }
+},
+{
+  "model": "schedule.schedule",
+  "pk": 1,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "event": 1,
+    "version": "v1.0",
+    "published": "2024-11-29T20:00:00.000Z",
+    "comment": null
+  }
+},
+{
+  "model": "schedule.schedule",
+  "pk": 2,
+  "fields": {
+    "created": "2024-11-29T21:00:00.000Z",
+    "updated": "2024-11-29T21:00:00.000Z",
+    "event": 1,
+    "version": "v1.1",
+    "published": "2024-11-29T21:00:00.000Z",
+    "comment": "{\"en\": \"We released a new schedule version!\"}"
+  }
+},
+{
+  "model": "schedule.schedule",
+  "pk": 3,
+  "fields": {
+    "created": "2024-11-29T22:00:00.000Z",
+    "updated": "2024-11-29T22:00:00.000Z",
+    "event": 1,
+    "version": null,
+    "published": null,
+    "comment": null
+  }
+},
+{
+  "model": "schedule.talkslot",
+  "pk": 1,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "submission": 1,
+    "room": 1,
+    "schedule": 1,
+    "is_visible": true,
+    "start": "2024-12-24T08:30:00Z",
+    "end": "2024-12-24T09:00:00Z",
+    "description": null
+  }
+},
+{
+  "model": "schedule.talkslot",
+  "pk": 2,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "submission": 2,
+    "room": 1,
+    "schedule": 1,
+    "is_visible": true,
+    "start": "2024-12-24T09:30:00Z",
+    "end": "2024-12-24T10:00:00Z",
+    "description": null
+  }
+},
+{
+  "model": "schedule.talkslot",
+  "pk": 3,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "submission": 3,
+    "room": 1,
+    "schedule": 1,
+    "is_visible": true,
+    "start": "2024-12-24T17:00:00Z",
+    "end": "2024-12-24T17:30:00Z",
+    "description": null
+  }
+},
+{
+  "model": "schedule.talkslot",
+  "pk": 4,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "submission": 4,
+    "room": 1,
+    "schedule": 1,
+    "is_visible": true,
+    "start": "2024-12-25T08:30:00Z",
+    "end": "2024-12-25T09:00:00Z",
+    "description": null
+  }
+},
+{
+  "model": "schedule.talkslot",
+  "pk": 5,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "submission": 5,
+    "room": 1,
+    "schedule": 1,
+    "is_visible": true,
+    "start": "2024-12-25T09:30:00Z",
+    "end": "2024-12-25T10:00:00Z",
+    "description": null
+  }
+},
+{
+  "model": "schedule.talkslot",
+  "pk": 6,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "submission": 6,
+    "room": 1,
+    "schedule": 1,
+    "is_visible": true,
+    "start": "2024-12-25T17:00:00Z",
+    "end": "2024-12-25T17:30:00Z",
+    "description": null
+  }
+},
+{
+  "model": "schedule.talkslot",
+  "pk": 7,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "submission": 1,
+    "room": 1,
+    "schedule": 2,
+    "is_visible": true,
+    "start": "2024-12-26T08:30:00Z",
+    "end": "2024-12-26T09:00:00Z",
+    "description": null
+  }
+},
+{
+  "model": "schedule.talkslot",
+  "pk": 8,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "submission": 2,
+    "room": 1,
+    "schedule": 2,
+    "is_visible": true,
+    "start": "2024-12-26T09:30:00Z",
+    "end": "2024-12-26T10:00:00Z",
+    "description": null
+  }
+},
+{
+  "model": "schedule.talkslot",
+  "pk": 9,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "submission": 3,
+    "room": 1,
+    "schedule": 2,
+    "is_visible": true,
+    "start": "2024-12-26T17:00:00Z",
+    "end": "2024-12-26T17:30:00Z",
+    "description": null
+  }
+},
+{
+  "model": "schedule.talkslot",
+  "pk": 10,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "submission": 4,
+    "room": 1,
+    "schedule": 2,
+    "is_visible": true,
+    "start": "2024-12-27T08:30:00Z",
+    "end": "2024-12-27T09:00:00Z",
+    "description": null
+  }
+},
+{
+  "model": "schedule.talkslot",
+  "pk": 11,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "submission": 5,
+    "room": 1,
+    "schedule": 2,
+    "is_visible": true,
+    "start": "2024-12-27T09:30:00Z",
+    "end": "2024-12-27T10:00:00Z",
+    "description": null
+  }
+},
+{
+  "model": "schedule.talkslot",
+  "pk": 12,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "submission": 6,
+    "room": 1,
+    "schedule": 2,
+    "is_visible": true,
+    "start": "2024-12-27T17:00:00Z",
+    "end": "2024-12-27T17:30:00Z",
+    "description": null
+  }
+},
+{
+  "model": "schedule.talkslot",
+  "pk": 13,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "submission": 1,
+    "room": 1,
+    "schedule": 3,
+    "is_visible": true,
+    "start": "2024-12-26T08:30:00Z",
+    "end": "2024-12-26T09:00:00Z",
+    "description": null
+  }
+},
+{
+  "model": "schedule.talkslot",
+  "pk": 14,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "submission": 2,
+    "room": 1,
+    "schedule": 3,
+    "is_visible": true,
+    "start": "2024-12-26T09:30:00Z",
+    "end": "2024-12-26T10:00:00Z",
+    "description": null
+  }
+},
+{
+  "model": "schedule.talkslot",
+  "pk": 15,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "submission": 3,
+    "room": 1,
+    "schedule": 3,
+    "is_visible": true,
+    "start": "2024-12-26T17:00:00Z",
+    "end": "2024-12-26T17:30:00Z",
+    "description": null
+  }
+},
+{
+  "model": "schedule.talkslot",
+  "pk": 16,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "submission": 4,
+    "room": 1,
+    "schedule": 3,
+    "is_visible": true,
+    "start": "2024-12-27T08:30:00Z",
+    "end": "2024-12-27T09:00:00Z",
+    "description": null
+  }
+},
+{
+  "model": "schedule.talkslot",
+  "pk": 17,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "submission": 5,
+    "room": 1,
+    "schedule": 3,
+    "is_visible": true,
+    "start": "2024-12-27T09:30:00Z",
+    "end": "2024-12-27T10:00:00Z",
+    "description": null
+  }
+},
+{
+  "model": "schedule.talkslot",
+  "pk": 18,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "submission": 6,
+    "room": 1,
+    "schedule": 3,
+    "is_visible": true,
+    "start": "2024-12-27T17:00:00Z",
+    "end": "2024-12-27T17:30:00Z",
+    "description": null
+  }
+},
+{
+  "model": "submission.submission",
+  "pk": 1,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "code": "DKL7LY",
+    "event": 1,
+    "title": "Re-contextualized 5thgeneration help-desk",
+    "submission_type": 1,
+    "track": 1,
+    "state": "confirmed",
+    "pending_state": null,
+    "abstract": "Evolve e-business platforms!",
+    "description": "Determine one account glass.\nCollege ready want foot technology great yeah before. Minute industry outside. Station career head election sign.",
+    "notes": null,
+    "internal_notes": null,
+    "duration": null,
+    "slot_count": 1,
+    "content_locale": "en",
+    "is_featured": false,
+    "do_not_record": false,
+    "image": "",
+    "invitation_token": "7AFGTBQDDD99VT7Y8ESF7L79W8JLA9PH",
+    "access_code": null,
+    "review_code": "GMJ9TU7UQUBVXTUPYXZLMT3ZUFVDDWTT",
+    "anonymised_data": "{}",
+    "speakers": [
+      2
+    ],
+    "tags": [],
+    "assigned_reviewers": []
+  }
+},
+{
+  "model": "submission.submission",
+  "pk": 2,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "code": "H7HMGF",
+    "event": 1,
+    "title": "Focused reciprocal capability",
+    "submission_type": 1,
+    "track": 2,
+    "state": "confirmed",
+    "pending_state": null,
+    "abstract": "Iterate world-class e-commerce!",
+    "description": "Use fill station sometimes. Economy real east save condition home represent.\nHim PM available out control. Stuff brother contain line. Southern ten nearly day coach herself word.",
+    "notes": null,
+    "internal_notes": null,
+    "duration": null,
+    "slot_count": 1,
+    "content_locale": "en",
+    "is_featured": false,
+    "do_not_record": false,
+    "image": "",
+    "invitation_token": "XV7JMCVRMSSKTZ9ALNNZFHYTEHDDHGJC",
+    "access_code": null,
+    "review_code": "UNKCEJK7VKS3XKG78KTGY8YVWNDWKKBN",
+    "anonymised_data": "{}",
+    "speakers": [
+      3
+    ],
+    "tags": [],
+    "assigned_reviewers": []
+  }
+},
+{
+  "model": "submission.submission",
+  "pk": 3,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "code": "RZ9R3S",
+    "event": 1,
+    "title": "Enterprise-wide clear-thinking monitoring",
+    "submission_type": 1,
+    "track": 1,
+    "state": "confirmed",
+    "pending_state": null,
+    "abstract": "Synthesize enterprise web services!",
+    "description": "Discover program newspaper manage spend both.\nCreate raise vote part item.\nScore practice two interest. Option race nearly speak police carry.",
+    "notes": null,
+    "internal_notes": null,
+    "duration": null,
+    "slot_count": 1,
+    "content_locale": "en",
+    "is_featured": false,
+    "do_not_record": false,
+    "image": "",
+    "invitation_token": "7VE8DRSJTYGGXFGA8FDDCCFNRBLTRUTF",
+    "access_code": null,
+    "review_code": "YNU7SP8MM938AJM3CMATJYEXCJYMFSST",
+    "anonymised_data": "{}",
+    "speakers": [
+      4
+    ],
+    "tags": [],
+    "assigned_reviewers": []
+  }
+},
+{
+  "model": "submission.submission",
+  "pk": 4,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "code": "JZXYDM",
+    "event": 1,
+    "title": "Quality-focused coherent workforce",
+    "submission_type": 1,
+    "track": 2,
+    "state": "confirmed",
+    "pending_state": null,
+    "abstract": "Incentivize next-generation users!",
+    "description": "Source can easy mean candidate artist. Sport everyone population recent brother reach message.",
+    "notes": null,
+    "internal_notes": null,
+    "duration": null,
+    "slot_count": 1,
+    "content_locale": "en",
+    "is_featured": false,
+    "do_not_record": false,
+    "image": "",
+    "invitation_token": "TGZ3ATWEFEHZ9UU7ZJS9DXWMVR9SLYEP",
+    "access_code": null,
+    "review_code": "MU8A7X7GV8FLBVQP9RPZ7MHSQ7QGA9VU",
+    "anonymised_data": "{}",
+    "speakers": [
+      5
+    ],
+    "tags": [],
+    "assigned_reviewers": []
+  }
+},
+{
+  "model": "submission.submission",
+  "pk": 5,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "code": "M89B9Q",
+    "event": 1,
+    "title": "Virtual web-enabled implementation",
+    "submission_type": 1,
+    "track": 2,
+    "state": "confirmed",
+    "pending_state": null,
+    "abstract": "Redefine granular e-services!",
+    "description": "Happen manage expert great. Blue executive fill special class natural.\nSimply there six. Project parent describe over meeting sign.\nMeasure travel expert meet situation. Compare ok line music still.",
+    "notes": null,
+    "internal_notes": null,
+    "duration": null,
+    "slot_count": 1,
+    "content_locale": "en",
+    "is_featured": false,
+    "do_not_record": false,
+    "image": "",
+    "invitation_token": "PJCRLV9YRHZ8MEQAL3GCXUMND3PNGE7F",
+    "access_code": null,
+    "review_code": "CBRQ9LTGSWXG7LYWTEYDBY8W9NXFHATM",
+    "anonymised_data": "{}",
+    "speakers": [
+      5,
+      6
+    ],
+    "tags": [],
+    "assigned_reviewers": []
+  }
+},
+{
+  "model": "submission.submission",
+  "pk": 6,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "code": "CMYQK9",
+    "event": 1,
+    "title": "Automated local moratorium",
+    "submission_type": 1,
+    "track": 1,
+    "state": "canceled",
+    "pending_state": null,
+    "abstract": "Disintermediate customized e-markets!",
+    "description": "Rock your fall training alone. Wrong international still film magazine.",
+    "notes": null,
+    "internal_notes": null,
+    "duration": null,
+    "slot_count": 1,
+    "content_locale": "en",
+    "is_featured": false,
+    "do_not_record": false,
+    "image": "",
+    "invitation_token": "RKGJTP9KRY7CCL7AGVVESMXZ3LFY7K7Q",
+    "access_code": null,
+    "review_code": "FKADPJQERZQWQFHUCGPEWWSMKJQYKBND",
+    "anonymised_data": "{}",
+    "speakers": [
+      7
+    ],
+    "tags": [],
+    "assigned_reviewers": []
+  }
+},
+{
+  "model": "submission.submission",
+  "pk": 7,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "code": "QKJ8HJ",
+    "event": 1,
+    "title": "Horizontal systematic open system",
+    "submission_type": 1,
+    "track": 2,
+    "state": "rejected",
+    "pending_state": null,
+    "abstract": "Transition bleeding-edge portals!",
+    "description": "Kid language respond note. Coach increase school war poor guy.",
+    "notes": null,
+    "internal_notes": null,
+    "duration": null,
+    "slot_count": 1,
+    "content_locale": "en",
+    "is_featured": false,
+    "do_not_record": false,
+    "image": "",
+    "invitation_token": "9JR8NM7JQBFY3KMF8J7SNZ9SABA7PS9J",
+    "access_code": null,
+    "review_code": "BWRZVUC8NQ7LZPX3CNEGUZKNAWQ3QCKC",
+    "anonymised_data": "{}",
+    "speakers": [
+      8
+    ],
+    "tags": [],
+    "assigned_reviewers": []
+  }
+},
+{
+  "model": "submission.track",
+  "pk": 1,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "event": 1,
+    "name": "Re-contextualized",
+    "description": "",
+    "color": "#783806",
+    "position": null,
+    "requires_access_code": false
+  }
+},
+{
+  "model": "submission.track",
+  "pk": 2,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "event": 1,
+    "name": "Cloned",
+    "description": "",
+    "color": "#e2c033",
+    "position": null,
+    "requires_access_code": false
+  }
+},
+{
+  "model": "submission.submissiontype",
+  "pk": 1,
+  "fields": {
+    "created": "2024-11-29T20:00:00.000Z",
+    "updated": "2024-11-29T20:00:00.000Z",
+    "event": 1,
+    "name": "Talk",
+    "default_duration": 30,
+    "deadline": null,
+    "requires_access_code": false
+  }
+}
+]

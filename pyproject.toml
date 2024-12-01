@@ -44,8 +44,8 @@ exclude = ["migrations"]
 select = ["ALL"]
 ignore = [
   "ANN", "C90", "COM", "D1", "D200", "D202", "D203", "D205", "D212", "DJ006", "DJ007", "EM", "FBT", "FIX",
-  "N818", "PERF203", "PLR", "PLW0603", "PTH", "RET", "RUF012", "RSE", "S308", "S311", "S603", "T20", "TD",
-  "TRY"
+  "N818", "PERF203", "PLR", "PLW0603", "PT", "PTH", "RET", "RUF012", "RSE", "S308", "S311", "S603", "T20",
+  "TD", "TRY"
 ]
 
 [tool.ruff.lint.flake8-quotes]
