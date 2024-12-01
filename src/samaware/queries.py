@@ -38,4 +38,6 @@ def get_sessions_missing_speakers(event, timeframe):
     unarrived_speakers = SpeakerProfile.objects.filter(event=event,
                                                        has_arrived=False).values_list('user', flat=True)
 
-    return event.submissions.filter(slots__in=upcoming_slots, speakers__in=unarrived_speakers)
+    return event.submissions.filter(state__in=SubmissionStates.accepted_states,
+                                    slots__in=upcoming_slots,
+                                    speakers__in=unarrived_speakers)
