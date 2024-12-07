@@ -31,63 +31,63 @@ class QueriesTest(SamawareTestCase):
         self.assertEqual(len(speakers), 1)
         self.assertEqual(speakers[0].user.name, 'Tammy Wong')
 
-    def test_sessions_missing_speakers(self):
+    def test_slots_missing_speakers(self):
         timeframe = timedelta(hours=2)
 
         with scope(event=self.event):
-            sessions = queries.get_sessions_missing_speakers(self.event, timeframe)
+            slots = queries.get_slots_missing_speakers(self.event, timeframe)
 
-        self.assertEqual(len(sessions), 2)
+        self.assertEqual(len(slots), 2)
 
         with scope(event=self.event):
-            for speaker in sessions[0].speaker_profiles:
+            for speaker in slots[0].submission.speaker_profiles:
                 speaker.has_arrived = True
                 speaker.save()
 
-            sessions = queries.get_sessions_missing_speakers(self.event, timeframe)
+            slots = queries.get_slots_missing_speakers(self.event, timeframe)
 
-        self.assertEqual(len(sessions), 1)
+        self.assertEqual(len(slots), 1)
 
-    def test_sessions_missing_speakers_multi(self):
+    def test_slots_missing_speakers_multi(self):
         timeframe = timedelta(days=5)
 
         with scope(event=self.event):
-            sessions = queries.get_sessions_missing_speakers(self.event, timeframe)
+            slots = queries.get_slots_missing_speakers(self.event, timeframe)
 
-        self.assertEqual(len(sessions), 6)
+        self.assertEqual(len(slots), 6)
 
         with scope(event=self.event):
-            for session in sessions:
-                if len(session.speaker_profiles) == 1:
-                    session.speaker_profiles[0].has_arrived = True
-                    session.speaker_profiles[0].save()
+            for slot in slots:
+                if len(slot.submission.speaker_profiles) == 1:
+                    slot.submission.speaker_profiles[0].has_arrived = True
+                    slot.submission.speaker_profiles[0].save()
 
-            sessions = queries.get_sessions_missing_speakers(self.event, timeframe)
+            slots = queries.get_slots_missing_speakers(self.event, timeframe)
 
-        self.assertEqual(len(sessions), 1)
+        self.assertEqual(len(slots), 1)
 
         with scope(event=self.event):
             changes_count = 0
 
-            for speaker in sessions[0].speaker_profiles:
+            for speaker in slots[0].submission.speaker_profiles:
                 if not speaker.has_arrived:
                     speaker.has_arrived = True
                     speaker.save()
                     changes_count += 1
 
-            sessions = queries.get_sessions_missing_speakers(self.event, timeframe)
+            slots = queries.get_slots_missing_speakers(self.event, timeframe)
 
-        self.assertEqual(len(sessions), 0)
+        self.assertEqual(len(slots), 0)
         self.assertEqual(changes_count, 1)
 
-    def test_sessions_without_recording(self):
+    def test_slots_without_recording(self):
         with scope(event=self.event):
-            sessions = queries.get_sessions_without_recording(self.event)
+            slots = queries.get_slots_without_recording(self.event)
 
-        self.assertEqual(len(sessions), 2)
+        self.assertEqual(len(slots), 2)
 
         timeframe = timedelta(hours=2)
         with scope(event=self.event):
-            sessions = queries.get_sessions_without_recording(self.event, timeframe)
+            slots = queries.get_slots_without_recording(self.event, timeframe)
 
-        self.assertEqual(len(sessions), 1)
+        self.assertEqual(len(slots), 1)

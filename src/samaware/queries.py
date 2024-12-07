@@ -25,10 +25,10 @@ def get_arrived_speakers(event):
     return get_all_speakers(event).filter(has_arrived=True)
 
 
-def get_sessions_missing_speakers(event, timeframe):
+def get_slots_missing_speakers(event, timeframe):
     """
-    Returns sessions (i.e. Submissions) that start within the specified timeframe from now but have speakers
-    who have not yet been marked as arrived.
+    Returns TalkSlots that start within the specified timeframe from now but have speakers who have not yet
+    been marked as arrived.
     """
 
     now = timezone.now()
@@ -38,25 +38,22 @@ def get_sessions_missing_speakers(event, timeframe):
     unarrived_speakers = SpeakerProfile.objects.filter(event=event,
                                                        has_arrived=False).values_list('user', flat=True)
 
-    return event.submissions.filter(state__in=SubmissionStates.accepted_states,
-                                    slots__in=upcoming_slots,
-                                    speakers__in=unarrived_speakers)
+    return upcoming_slots.filter(submission__speakers__in=unarrived_speakers,
+                                 submission__state__in=SubmissionStates.accepted_states)
 
 
-def get_sessions_without_recording(event, timeframe=None):
+def get_slots_without_recording(event, timeframe=None):
     """
-    Returns sessions (i.e. Submissions) with "Don't record" set, optionally starting within a specified
-    timeframe.
+    Returns TalkSlots whose talk has "Don't record" set, optionally starting within a specified timeframe.
     """
 
-    sessions = event.submissions.filter(state__in=SubmissionStates.accepted_states,
-                                        do_not_record=True)
+    slots = event.wip_schedule.talks.filter(submission__do_not_record=True,
+                                            submission__state__in=SubmissionStates.accepted_states)
 
     if timeframe is None:
-        return sessions
+        return slots
     else:
         now = timezone.now()
         upcoming_threshold = now + timeframe
-        upcoming_slots = event.wip_schedule.talks.filter(start__gt=now, start__lt=upcoming_threshold)
 
-        return sessions.filter(slots__in=upcoming_slots)
+        return slots.filter(start__gt=now, start__lt=upcoming_threshold)

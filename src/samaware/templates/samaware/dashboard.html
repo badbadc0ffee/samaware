@@ -28,10 +28,10 @@
         </div>
     </div>
     <div class="dashboard-block-wrapper">
-        <a href="/todo" class="dashboard-block dashboard-block-{{ sessions_missing_speakers.count | count_class }}">
-            <h1>{{ sessions_missing_speakers.count }}</h1>
+        <a href="/todo" class="dashboard-block dashboard-block-{{ slots_missing_speakers.count | count_class }}">
+            <h1>{{ slots_missing_speakers.count }}</h1>
             <div class="dashboard-description">
-                {% translate 'sessions missing speakers in the next 4 hours' %}
+                {% translate 'talks missing speakers in the next 4 hours' %}
             </div>
         </a>
     </div>
@@ -69,14 +69,14 @@
     </div>
     <div class="dashboard-block-wrapper">
         <a href="{% url 'plugins:samaware:no_recording' event=request.event.slug %}" class="dashboard-block dashboard-block-extended">
-            <h1>6</h1>
+            <h1>{{ no_recording_slots.count }}</h1>
             <div class="dashboard-description">
-                {% translate 'sessions without recording' %}
+                {% translate 'talks without recording' %}
             </div>
         </a>
         <div class="dashboard-block-extension">
             <a href="{% url 'plugins:samaware:no_recording' event=request.event.slug %}?upcoming=on" class="dashboard-block-addon dashboard-block-addon-info">
-                {% trans 'next 4 hours' %}: {{ no_recording_sessions_4h.count }}
+                {% trans 'next 4 hours' %}: {{ no_recording_slots_4h.count }}
             </a>
             <a href="/todo" class="dashboard-block-addon dashboard-block-addon-error">
                 {% trans 'without tech rider' %}: 5

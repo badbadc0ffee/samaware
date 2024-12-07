@@ -17,11 +17,11 @@
 {% endcompress %}
 {% endblock scripts %}
 
-{% block extra_title %}{{ slots.count}} {% translate 'sessions without recording' %} :: {% endblock extra_title %}
+{% block extra_title %}{{ slots.count}} {% translate 'talks without recording' %} :: {% endblock extra_title %}
 
 {% block content %}
 
-<h2>{{ slots.count}} {% translate 'sessions without recording' %}</h2>
+<h2>{{ slots.count}} {% translate 'talks without recording' %}</h2>
 
 <div class="submit-group">
     <form action="." method="GET" class="samaware-list-filter">

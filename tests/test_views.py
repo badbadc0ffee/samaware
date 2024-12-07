@@ -23,7 +23,7 @@ class DashboardTest(ViewsTestCase):
         self.assertEqual(response.status_code, 200)
 
         self.assertEqual(len(response.context['total_speakers']), 5)
-        self.assertEqual(len(response.context['sessions_missing_speakers']), 2)
+        self.assertEqual(len(response.context['slots_missing_speakers']), 2)
 
 
 class NoRecordingListTest(ViewsTestCase):
