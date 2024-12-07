@@ -62,11 +62,6 @@
     "locale_array": "en",
     "content_locale_array": "en",
     "locale": "en",
-    "accept_template": null,
-    "ack_template": null,
-    "reject_template": null,
-    "update_template": null,
-    "question_template": null,
     "landing_page_text": "{\"en\": \"# Welcome to SamAwareCon!\\r\\n\\r\\We will be presenting the recent developments around our Pretalx plugin.\\r\\n\\r\\nThis event exists for testing purposes only. It is a demo, and it is only a demo.\"}",
     "featured_sessions_text": "{}",
     "plugins": "samaware"
