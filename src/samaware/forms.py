@@ -8,3 +8,10 @@ class NoRecordingFilter(forms.Form):
     default_renderer = forms.renderers.DjangoTemplates
 
     upcoming = forms.BooleanField(label=_('Next 4 hours only'), label_suffix='', required=False)
+
+
+class MissingSpeakerFilter(forms.Form):
+
+    default_renderer = forms.renderers.DjangoTemplates
+
+    upcoming = forms.BooleanField(label=_('Next 4 hours only'), label_suffix='', required=False)

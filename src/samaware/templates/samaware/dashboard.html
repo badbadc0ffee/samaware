@@ -28,7 +28,7 @@
         </div>
     </div>
     <div class="dashboard-block-wrapper">
-        <a href="/todo" class="dashboard-block dashboard-block-{{ slots_missing_speakers.count | count_class }}">
+        <a href="{% url 'plugins:samaware:missing_speakers' event=request.event.slug %}?upcoming=on" class="dashboard-block dashboard-block-{{ slots_missing_speakers.count | count_class }}">
             <h1>{{ slots_missing_speakers.count }}</h1>
             <div class="dashboard-description">
                 {% translate 'talks missing speakers in the next 4 hours' %}

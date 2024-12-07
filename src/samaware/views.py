@@ -31,6 +31,37 @@ class Dashboard(EventPermissionRequired, TemplateView):
         return data
 
 
+class MissingSpeakersList(EventPermissionRequired, Sortable, ListView):
+
+    permission_required = samaware.REQUIRED_PERMISSIONS
+    sortable_fields = ('submission__track__name', 'submission__title', 'start', 'room')
+    default_sort_field = 'start'
+    template_name = 'samaware/missing_speakers_list.html'
+    context_object_name = 'slots'
+    upcoming_timeframe = datetime.timedelta(hours=4)
+
+    def get_queryset(self):
+        filter_form = self.filter_form()
+        if filter_form.is_valid() and filter_form.cleaned_data.get('upcoming'):
+            slots = queries.get_slots_missing_speakers(self.request.event,
+                                                       timeframe=self.upcoming_timeframe)
+        else:
+            slots = queries.get_slots_missing_speakers(self.request.event)
+
+        slots = self.sort_queryset(slots)
+        return slots.select_related('submission', 'submission__track', 'submission__event', 'room') \
+                    .prefetch_related('submission__speakers')
+
+    @context
+    def event_profiles(self):
+        profiles = queries.get_all_speakers(self.request.event).select_related('user', 'event')
+        return {profile.user: profile for profile in profiles}
+
+    @context
+    def filter_form(self):
+        return forms.MissingSpeakerFilter(self.request.GET)
+
+
 class NoRecordingList(EventPermissionRequired, Sortable, ListView):
 
     permission_required = samaware.REQUIRED_PERMISSIONS
@@ -40,10 +71,6 @@ class NoRecordingList(EventPermissionRequired, Sortable, ListView):
     context_object_name = 'slots'
     upcoming_timeframe = datetime.timedelta(hours=4)
 
-    @context
-    def filter_form(self):
-        return forms.NoRecordingFilter(self.request.GET)
-
     def get_queryset(self):
         filter_form = self.filter_form()
         if filter_form.is_valid() and filter_form.cleaned_data.get('upcoming'):
@@ -52,4 +79,9 @@ class NoRecordingList(EventPermissionRequired, Sortable, ListView):
         else:
             slots = queries.get_slots_without_recording(self.request.event)
 
-        return self.sort_queryset(slots.select_related('submission', 'room'))
+        slots = self.sort_queryset(slots)
+        return slots.select_related('submission', 'submission__track', 'submission__event', 'room')
+
+    @context
+    def filter_form(self):
+        return forms.NoRecordingFilter(self.request.GET)
