@@ -6,7 +6,12 @@ from . import views
 urlpatterns = [
     re_path(
         rf'^orga/event/(?P<event>{SLUG_REGEX})/p/samaware/$',
-        views.DashboardView.as_view(),
+        views.Dashboard.as_view(),
         name='dashboard'
+    ),
+    re_path(
+        rf'^orga/event/(?P<event>{SLUG_REGEX})/p/samaware/no-recording/$',
+        views.NoRecordingList.as_view(),
+        name='no_recording'
     )
 ]

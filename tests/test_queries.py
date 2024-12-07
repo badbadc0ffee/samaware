@@ -79,3 +79,15 @@ class QueriesTest(SamawareTestCase):
 
         self.assertEqual(len(sessions), 0)
         self.assertEqual(changes_count, 1)
+
+    def test_sessions_without_recording(self):
+        with scope(event=self.event):
+            sessions = queries.get_sessions_without_recording(self.event)
+
+        self.assertEqual(len(sessions), 2)
+
+        timeframe = timedelta(hours=2)
+        with scope(event=self.event):
+            sessions = queries.get_sessions_without_recording(self.event, timeframe)
+
+        self.assertEqual(len(sessions), 1)

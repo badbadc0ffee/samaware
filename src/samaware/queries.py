@@ -41,3 +41,22 @@ def get_sessions_missing_speakers(event, timeframe):
     return event.submissions.filter(state__in=SubmissionStates.accepted_states,
                                     slots__in=upcoming_slots,
                                     speakers__in=unarrived_speakers)
+
+
+def get_sessions_without_recording(event, timeframe=None):
+    """
+    Returns sessions (i.e. Submissions) with "Don't record" set, optionally starting within a specified
+    timeframe.
+    """
+
+    sessions = event.submissions.filter(state__in=SubmissionStates.accepted_states,
+                                        do_not_record=True)
+
+    if timeframe is None:
+        return sessions
+    else:
+        now = timezone.now()
+        upcoming_threshold = now + timeframe
+        upcoming_slots = event.wip_schedule.talks.filter(start__gt=now, start__lt=upcoming_threshold)
+
+        return sessions.filter(slots__in=upcoming_slots)

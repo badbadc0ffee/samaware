@@ -1,0 +1,82 @@
+{% extends "orga/base.html" %}
+
+{% load compress %}
+{% load event_tags %}
+{% load i18n %}
+{% load static %}
+
+{% block stylesheets %}
+{% compress css %}
+<link rel="stylesheet" href="{% static 'samaware/samaware.css' %}">
+{% endcompress %}
+{% endblock stylesheets %}
+
+{% block scripts %}
+{% compress js %}
+<script src="{% static 'samaware/samaware.js' %}" defer="defer"></script>
+{% endcompress %}
+{% endblock scripts %}
+
+{% block extra_title %}{{ slots.count}} {% translate 'sessions without recording' %} :: {% endblock extra_title %}
+
+{% block content %}
+
+<h2>{{ slots.count}} {% translate 'sessions without recording' %}</h2>
+
+<div class="submit-group">
+    <form action="." method="GET" class="samaware-list-filter">
+        {{ filter_form.as_div }}
+    </form>
+</div>
+
+<div class="table-responsive">
+    <table class="table-sticky">
+        <thead>
+            <tr>
+                <th>
+                    {% if request.event|get_feature_flag:'use_tracks' %}
+                    <a href="{% querystring sort='submission__track__name' %}"><i class="fa fa-caret-down" title="{% translate 'Sort (a-z)' %}"></i></a>
+                    <a href="{% querystring sort='-submission__track__name' %}"><i class="fa fa-caret-up" title="{% translate 'Sort (z-a)' %}"></i></a>
+                    {% endif %}
+                </th>
+                <th>
+                    {% translate 'Title' %}
+                    <a href="{% querystring sort='submission__title' %}"><i class="fa fa-caret-down" title="{% translate 'Sort (a-z)' %}"></i></a>
+                    <a href="{% querystring sort='-submission__title' %}"><i class="fa fa-caret-up" title="{% translate 'Sort (z-a)' %}"></i></a>
+                </th>
+                <th>
+                    {% trans 'Start' %}
+                    <a href="{% querystring sort='start' %}"><i class="fa fa-caret-down" title="{% translate 'Sort (soon-late)' %}"></i></a>
+                    <a href="{% querystring sort='-start' %}"><i class="fa fa-caret-up" title="{% translate 'Sort (late-soon)' %}"></i></a>
+                </th>
+                <th>
+                    {% translate 'Room' %}
+                    <a href="{% querystring sort='room' %}"><i class="fa fa-caret-down" title="{% translate 'Sort (a-z)' %}"></i></a>
+                    <a href="{% querystring sort='-room' %}"><i class="fa fa-caret-up" title="{% translate 'Sort (z-a)' %}"></i></a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for slot in slots %}
+            <tr>
+                <td class="text-center">
+                    {% if request.event|get_feature_flag:'use_tracks' and slot.submission.track %}
+                    <div class="color-square" style="background-color: {{ slot.submission.track.color }}" title="{{ slot.submission.track.name }}"></div>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ slot.submission.orga_urls.base }}">{{ slot.submission.title }}</a>
+                </td>
+                <td>
+                    {{ slot.start|date:'SHORT_DATETIME_FORMAT' }}
+                </td>
+                <td>
+                    {{ slot.room }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock content %}

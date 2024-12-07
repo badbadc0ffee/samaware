@@ -68,20 +68,21 @@
         </div>
     </div>
     <div class="dashboard-block-wrapper">
-        <a href="/todo" class="dashboard-block dashboard-block-extended">
+        <a href="{% url 'plugins:samaware:no_recording' event=request.event.slug %}" class="dashboard-block dashboard-block-extended">
             <h1>6</h1>
             <div class="dashboard-description">
                 {% translate 'sessions without recording' %}
             </div>
         </a>
         <div class="dashboard-block-extension">
-            <div class="dashboard-block-addon dashboard-block-addon-info">
-                {% trans 'next 4 hours' %}: 0
-            </div>
+            <a href="{% url 'plugins:samaware:no_recording' event=request.event.slug %}?upcoming=on" class="dashboard-block-addon dashboard-block-addon-info">
+                {% trans 'next 4 hours' %}: {{ no_recording_sessions_4h.count }}
+            </a>
             <a href="/todo" class="dashboard-block-addon dashboard-block-addon-error">
                 {% trans 'without tech rider' %}: 5
             </a>
         </div>
     </div>
 </div>
+
 {% endblock content %}

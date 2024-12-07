@@ -27,3 +27,14 @@
         }
     }
 }
+
+.samaware-list-filter {
+
+    /* See https://stackoverflow.com/a/17808895 */
+    input[type="checkbox"] {
+        float: left;
+        margin-top: 0.25em;
+        margin-right: 1em;
+    }
+
+}

@@ -13,7 +13,7 @@ authors = [
 license = {text = "ISC"}
 readme = "README.md"
 
-dependencies = []
+dependencies = ["django-context-decorator"]
 
 [project.optional-dependencies]
 dev = ["ruff", "pylint"]
@@ -27,7 +27,7 @@ Issues = "https://github.com/f30/spam/issues"
 where = "src"
 
 [tool.setuptools.package-data]
-"*" = ["*.html", "*.css"]
+"*" = ["*.html", "*.css", "*.js"]
 
 [tool.setuptools.dynamic]
 version = {attr = "samaware.__version__"}
