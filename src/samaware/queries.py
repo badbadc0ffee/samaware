@@ -25,21 +25,24 @@ def get_arrived_speakers(event):
     return get_all_speakers(event).filter(has_arrived=True)
 
 
-def get_slots_missing_speakers(event, timeframe):
+def get_slots_missing_speakers(event, timeframe=None):
     """
-    Returns TalkSlots that start within the specified timeframe from now but have speakers who have not yet
-    been marked as arrived.
+    Returns TalkSlots that have speakers who have not yet been marked as arrived, optionally starting within
+    a specified timeframe from now.
     """
-
-    now = timezone.now()
-    upcoming_threshold = now + timeframe
-    upcoming_slots = event.wip_schedule.talks.filter(start__gt=now, start__lt=upcoming_threshold)
 
     unarrived_speakers = SpeakerProfile.objects.filter(event=event,
                                                        has_arrived=False).values_list('user', flat=True)
+    slots = event.wip_schedule.talks.filter(submission__speakers__in=unarrived_speakers,
+                                            submission__state__in=SubmissionStates.accepted_states)
+    slots = slots.distinct()
 
-    return upcoming_slots.filter(submission__speakers__in=unarrived_speakers,
-                                 submission__state__in=SubmissionStates.accepted_states)
+    if timeframe is None:
+        return slots
+    else:
+        now = timezone.now()
+        upcoming_threshold = now + timeframe
+        return slots.filter(start__gt=now, start__lt=upcoming_threshold)
 
 
 def get_slots_without_recording(event, timeframe=None):

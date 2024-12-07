@@ -49,12 +49,10 @@ class QueriesTest(SamawareTestCase):
         self.assertEqual(len(slots), 1)
 
     def test_slots_missing_speakers_multi(self):
-        timeframe = timedelta(days=5)
-
         with scope(event=self.event):
-            slots = queries.get_slots_missing_speakers(self.event, timeframe)
+            slots = queries.get_slots_missing_speakers(self.event)
 
-        self.assertEqual(len(slots), 6)
+        self.assertEqual(len(slots), 5)
 
         with scope(event=self.event):
             for slot in slots:
@@ -62,7 +60,7 @@ class QueriesTest(SamawareTestCase):
                     slot.submission.speaker_profiles[0].has_arrived = True
                     slot.submission.speaker_profiles[0].save()
 
-            slots = queries.get_slots_missing_speakers(self.event, timeframe)
+            slots = queries.get_slots_missing_speakers(self.event)
 
         self.assertEqual(len(slots), 1)
 
@@ -75,7 +73,7 @@ class QueriesTest(SamawareTestCase):
                     speaker.save()
                     changes_count += 1
 
-            slots = queries.get_slots_missing_speakers(self.event, timeframe)
+            slots = queries.get_slots_missing_speakers(self.event)
 
         self.assertEqual(len(slots), 0)
         self.assertEqual(changes_count, 1)
