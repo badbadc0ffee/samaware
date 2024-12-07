@@ -1,21 +1,20 @@
-from django.urls import re_path
-from pretalx.event.models.event import SLUG_REGEX
+from django.urls import path
 
 from . import views
 
 urlpatterns = [
-    re_path(
-        rf'^orga/event/(?P<event>{SLUG_REGEX})/p/samaware/$',
+    path(
+        'orga/event/<slug:event>/p/samaware/',
         views.Dashboard.as_view(),
         name='dashboard'
     ),
-    re_path(
-        rf'^orga/event/(?P<event>{SLUG_REGEX})/p/samaware/missing-speakers/$',
+    path(
+        'orga/event/<slug:event>/p/samaware/missing-speakers/',
         views.MissingSpeakersList.as_view(),
         name='missing_speakers'
     ),
-    re_path(
-        rf'^orga/event/(?P<event>{SLUG_REGEX})/p/samaware/no-recording/$',
+    path(
+        'orga/event/<slug:event>/p/samaware/no-recording/',
         views.NoRecordingList.as_view(),
         name='no_recording'
     )
