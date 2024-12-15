@@ -1,8 +1,9 @@
 import datetime
 
-from django.views.generic import ListView, TemplateView
+from django.views.generic import DetailView, ListView, TemplateView
 from django_context_decorator import context
-from pretalx.common.views.mixins import EventPermissionRequired, Sortable
+from pretalx.common.views.mixins import EventPermissionRequired, PermissionRequired, Sortable
+from pretalx.submission.models.submission import Submission, SubmissionStates
 
 import samaware
 
@@ -27,6 +28,34 @@ class Dashboard(EventPermissionRequired, TemplateView):
                                                                             self.timeframe)
         data['no_recording_slots_4h'] = queries.get_slots_without_recording(self.request.event,
                                                                             self.timeframe)
+
+        return data
+
+
+class TalkOverview(PermissionRequired, DetailView):
+
+    permission_required = samaware.REQUIRED_PERMISSIONS
+    slug_field = 'code'
+    slug_url_kwarg = 'code'
+    template_name = 'samaware/talk_overview.html'
+    context_object_name = 'submission'
+
+    def get_queryset(self):
+        return Submission.objects.filter(event=self.request.event).select_related('event', 'track')
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        obj = self.object
+
+        data['submission_is_confirmed'] = obj.state == SubmissionStates.CONFIRMED
+        data['submission_unreleased_changes'] = queries.get_unreleased_changes_for_submission(obj)
+        # Get Submission's slots in the currrent WiP Schedule
+        data['submission_wip_slots'] = obj.slots.filter(schedule__version__isnull=True)
+
+        data['speaker_profiles'] = {user: user.event_profile(obj.event) for user in obj.speakers.all()}
+        data['other_event_talks'] = {
+            user: queries.get_talks_in_other_events(user, obj.event) for user in obj.speakers.all()
+        }
 
         return data
 

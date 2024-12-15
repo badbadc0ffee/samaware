@@ -1,6 +1,9 @@
+from itertools import chain
+
 from django.utils import timezone
+from django_scopes import scopes_disabled
 from pretalx.person.models import SpeakerProfile
-from pretalx.submission.models import SubmissionStates
+from pretalx.submission.models.submission import Submission, SubmissionManager, SubmissionStates
 
 
 def get_all_speakers(event):
@@ -60,3 +63,52 @@ def get_slots_without_recording(event, timeframe=None):
         upcoming_threshold = now + timeframe
 
         return slots.filter(start__gt=now, start__lt=upcoming_threshold)
+
+
+def get_unreleased_changes_for_submission(submission):
+    """
+    Returns a list of changes for the given talk between the current WiP Schedule and the previous
+    (released) one.
+    """
+
+    schedule_changes = submission.event.wip_schedule.changes
+
+    # Contains TalkSlots
+    new_changes = filter(lambda s: s.submission == submission, schedule_changes['new_talks'])
+    # Contains TalkSlots
+    canceled_changes = filter(lambda s: s.submission == submission, schedule_changes['canceled_talks'])
+    # Contains dicts containing the submission
+    moved_changes = filter(lambda d: d['submission'] == submission, schedule_changes['moved_talks'])
+
+    return list(chain(new_changes, canceled_changes, moved_changes))
+
+
+def get_talks_in_other_events(user, event):
+    """
+    Returns a list of accepted Submissions where the given User is among the speakers, across all public
+    Events from the current pretalx instance.
+    To avoid having to deal with permissions on the other Events, we limit ourselves to talks that are
+    visible in a published Schedule.
+    """
+
+    class AllEventsSubmission(Submission):
+        """
+        Proxy Model for `pretalx.submission.models.Submission` which overwrites the default Manager with
+        one *not* scoped to an Event.
+        """
+        objects = SubmissionManager()
+
+        class Meta:
+            proxy = True
+
+    with scopes_disabled():
+        submissions = AllEventsSubmission.objects.filter(
+            speakers=user, state__in=SubmissionStates.accepted_states, event__is_public=True
+        ).exclude(event=event).order_by('-created').select_related('event')
+
+        # Check if submissions is really contained in the latest published Schedule: There might be no
+        # (public) schedule at all or it might be accepted but not scheduled (and therefore not publicly
+        # visible)
+        submissions_list = [s for s in submissions if s in s.event.talks]
+
+    return submissions_list

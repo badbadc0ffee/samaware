@@ -9,6 +9,11 @@ urlpatterns = [
         name='dashboard'
     ),
     path(
+        'orga/event/<slug:event>/p/samaware/talks/<code>',
+        views.TalkOverview.as_view(),
+        name='talk_overview'
+    ),
+    path(
         'orga/event/<slug:event>/p/samaware/missing-speakers/',
         views.MissingSpeakersList.as_view(),
         name='missing_speakers'

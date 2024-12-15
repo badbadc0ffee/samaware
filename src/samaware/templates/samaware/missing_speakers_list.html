@@ -69,7 +69,7 @@
                     {% endif %}
                 </td>
                 <td>
-                    <a href="{{ slot.submission.orga_urls.base }}">{{ slot.submission.title }}</a>
+                    <a href="{% url 'plugins:samaware:talk_overview' event=request.event.slug code=slot.submission.code %}">{{ slot.submission.title }}</a>
                 </td>
                 <td>
                     {% for speaker in slot.submission.speakers.all %}

@@ -1,0 +1,195 @@
+{% extends "orga/base.html" %}
+
+{% load compress %}
+{% load event_tags %}
+{% load i18n %}
+{% load rich_text %}
+{% load static %}
+{% load samaware_extras %}
+
+{% block stylesheets %}
+{% compress css %}
+<link rel="stylesheet" href="{% static 'samaware/samaware.css' %}">
+{% endcompress %}
+{% endblock stylesheets %}
+
+{% block scripts %}
+{% compress js %}
+<script src="{% static 'samaware/samaware.js' %}" defer="defer"></script>
+{% endcompress %}
+{% endblock scripts %}
+
+{% block extra_title %}{{ submission.title }} :: {% endblock extra_title %}
+
+{% block content %}
+
+<h2 class="d-flex align-items-center">
+    <span>{{ quotation_open }}{{ submission.title }}{{ quotation_close }}</span>
+    <p class="ml-auto">
+        <a href="{{ submission.urls.public }}" class="btn btn-outline-info mt-2">
+            <i class="fa fa fa-calendar-o" aria-hidden="true"></i>
+            &nbsp;{% trans 'Show in Public Schedule' %}
+        </a>
+        <a href="{{ submission.orga_urls.base }}" class="btn btn-info mt-2">
+            <i class="fa fa fa-sticky-note" aria-hidden="true"></i>
+            &nbsp;{% trans 'Show in Session View' %}
+        </a>
+    </p>
+</h2>
+
+{% if not submission_is_confirmed %}
+<div class="alert alert-warning" role="alert">
+    {% with submission.get_state_display as state_display %}
+    <span>{% blocktranslate trimmed %}
+    Talk is <strong>not in state confirmed</strong>, but in state <strong>{{ state_display }}</strong>.
+    {% endblocktranslate %}</span>
+    {% endwith %}
+</div>
+{% endif %}
+
+{% if submission.pending_state %}
+<div class="alert alert-warning" role="alert">
+    {% with submission.get_state_display as current_state_display %}
+    {% with submission.get_pending_state_display as pending_state_display %}
+    <span>{% blocktranslate trimmed %}
+    Talk has a <strong>pending state change</strong> from {{ current_state_display }} to {{ pending_state_display }}.
+    {% endblocktranslate %}</span>
+    {% endwith %}
+    {% endwith %}
+</div>
+{% endif %}
+
+{% if submission_unreleased_changes %}
+<div class="alert alert-warning" role="alert">
+    {% url 'orga:schedule.release' event=submission.event.slug as schedule_release_url %}
+    <span>{% blocktranslate trimmed %}
+    There are <a href="{{ schedule_release_url }}"><strong>unreleased schedule changes</strong></a> for this talk.
+    {% endblocktranslate %}</span>
+</div>
+{% endif %}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card samaware-card">
+            <div class="card-body">
+                <h3>{% trans 'Time and Location' %}</h3>
+                <ul class="list-plain">
+                    {% for slot in submission_wip_slots %}
+                    <li>{{ slot.start|date:'l, j M Y, H:i' }}, {{ slot.room.name }}</li>
+                    {% endfor %}
+                </ul>
+
+                <h3>{% trans 'Duration' %}</h3>
+                {{ submission.export_duration }}
+
+                <h3>{% trans 'Language' %}</h3>
+                <div class="d-flex align-items-center">
+                    <img src="{% static 'vendored/flags/'|add:submission.content_locale|add:'.png' %}" alt="{{ submission.content_locale }} flag" class="samaware-flag-icon" aria-labelledby="talk-language-text" />
+                    <span id="talk-language-text">&nbsp;{{ submission.get_content_locale_display }}</span>
+                </div>
+
+                {% if request.event|get_feature_flag:'use_tracks' and submission.track %}
+                <h3>{% trans 'Track' %}</h3>
+                <div class="d-flex align-items-center">
+                    <div class="color-square align-self-center" style="background-color: {{ submission.track.color }}" aria-hidden="true"></div>
+                    <span>&nbsp;{{ submission.track.name }}</span>
+                </div>
+                {% endif %}
+
+                <h3>{% trans 'Abstract' %}</h3>
+                {{ submission.abstract|rich_text }}
+            </div>
+        </div>
+
+        <div class="card samaware-card">
+            <div class="card-body">
+                <h3>{% trans 'Recording' %}</h3>
+                {% if submission.do_not_record %}
+                <span class="fa-stack" title="{% trans 'Not being streamed/recorded' %}" aria-hidden="true">
+                    <i class="fa fa-video-camera fa-stack-1x"></i>
+                    <i class="fa fa-ban fa-stack-2x text-danger"></i>
+                </span>
+                &nbsp;{% trans 'Not being streamed/recorded' %}
+                {% else %}
+                <i class="fa fa-video-camera" title="{% trans 'Being streamed/recorded' %}" aria-hidden="true"></i>
+                &nbsp;{% trans 'Being streamed/recorded' %}
+                {% endif %}
+
+                <h3>{% trans 'Tech Rider' %}</h3>
+                TODO
+
+                {% if submission.internal_notes %}
+                <h3>{% trans 'Internal Notes' %}</h3>
+                {{ submission.internal_notes|linebreaks }}
+                {% endif %}
+
+                {% if submission.notes %}
+                <h3>{% trans 'Submitter Notes' %}</h3>
+                {{ submission.notes|linebreaks }}
+                {% endif %}
+
+                <h3>{% trans 'RT Ticket' %}</h3>
+                TODO
+
+                <h3>{% trans 'Zammad Tickets' %}</h3>
+                TODO
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        {% for speaker in submission.speakers.all %}
+        {% with speaker_profile=speaker_profiles|get_item:speaker %}
+        <div class="card samaware-card">
+            <div class="card-body">
+                <h2 class="d-flex align-items-start">
+                    {{ speaker.name }}
+                    <a href="{{ speaker_profile.orga_urls.base }}" class="btn btn-sm btn-info ml-auto">
+                        <i class="fa fa fa fa-address-card" aria-hidden="true"></i>
+                        &nbsp;{% trans 'Show in Speaker View' %}
+                    </a>
+                </h2>
+
+                <h3>{% trans 'Contact' %}</h3>
+                <a href="mailto:{{ speaker.email }}">{{ speaker.email }}</a>
+
+                <h3>{% trans 'Attendance' %}</h3>
+                <form action="{% url 'orga:speakers.arrived' event=submission.event.slug code=speaker.code %}" method="GET" class="samaware-arrived-form">
+                    {% if speaker_profile.has_arrived %}
+                    <button type="submit" class="samaware-btn btn btn-sm btn-success d-none">{% trans 'Mark as arrived' %}</button>
+                    <button type="submit" class="samaware-btn btn btn-sm btn-danger">{% trans 'Mark as not arrived' %}</button>
+                    {% else %}
+                    <button type="submit" class="samaware-btn btn btn-sm btn-success">{% trans 'Mark as arrived' %}</button>
+                    <button type="submit" class="samaware-btn btn btn-sm btn-danger d-none">{% trans 'Mark as not arrived' %}</button>
+                    {% endif %}
+                </form>
+
+                {% if speaker_profile.talks|length > 1 %}
+                <h3>{% trans 'Other talks in this event' %}</h3>
+                <ul class="list-plain">
+                    {% for talk in speaker_profile.talks %}
+                    {% if not talk.code == submission.code %}
+                    <li><a href="{% url 'plugins:samaware:talk_overview' event=talk.event.slug code=talk.code %}">{{ talk.title }}</a></li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
+                {% with talks=other_event_talks|get_item:speaker %}
+                {% if talks %}
+                <h3>{% trans 'Talks in other events' %}</h3>
+                <ul class="list-plain">
+                    {% for talk in talks %}
+                    <li>{{ talk.event.name}}: <a href="{{ talk.urls.public }}">{{ talk.title }}</a></li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+        {% endwith %}
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

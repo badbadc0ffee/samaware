@@ -1,3 +1,17 @@
+.align-self-center {
+    align-self: center !important;
+}
+
+.list-plain {
+    list-style-type: none;
+    padding-inline-start: 0;
+
+    li {
+        padding-inline-start: 0;
+    }
+
+}
+
 .dashboard-list {
     --color-info-light: color-mix(in srgb, white 75%, var(--color-info));
     --color-success-light: color-mix(in srgb, white 75%, var(--color-success));
@@ -6,6 +20,7 @@
     .dashboard-block {
         background-color: var(--color-info-light);
         color: var(--color-info-text-dark);
+
         &:hover {
             color: var(--color-info-text-dark);
         }
@@ -14,6 +29,7 @@
     .dashboard-block.dashboard-block-success {
         background-color: var(--color-success-light);
         color: var(--color-success-text-dark);
+
         &:hover {
             color: var(--color-success-text-dark);
         }
@@ -22,19 +38,42 @@
     .dashboard-block.dashboard-block-warning {
         background-color: var(--color-warning-light);
         color: var(--color-warning-text-dark);
+
         &:hover {
             color: var(--color-warning-text-dark);
         }
     }
 }
 
-.samaware-list-filter {
+.samaware-card {
+    margin-top: var(--size-spacer);
+    margin-bottom: var(--size-spacer);
 
+    h2 {
+        margin-top: var(--size-spacer);
+        font-size: 1.2rem;
+    }
+
+    h3 {
+        margin-top: var(--size-spacer);
+        font-size: 1.1rem;
+    }
+
+    .card-body {
+        padding-top: 0.5em;
+    }
+}
+
+.samaware-list-filter {
     /* See https://stackoverflow.com/a/17808895 */
     input[type="checkbox"] {
         float: left;
         margin-top: 0.25em;
         margin-right: 1em;
     }
+}
 
+.samaware-flag-icon {
+    margin-right: 2px;
+    width: 16px;
 }
