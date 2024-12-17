@@ -23,6 +23,15 @@ class QueriesTest(SamawareTestCase):
         self.assertIn('Richard Khan', speaker_names)
         self.assertNotIn('Donna Bailey', speaker_names)
 
+        with scope(event=self.event):
+            submission = Submission.objects.get(state=SubmissionStates.REJECTED)
+            submission.pending_state = SubmissionStates.ACCEPTED
+            submission.save()
+
+            speakers = queries.get_all_speakers(self.event)
+
+        self.assertEqual(len(speakers), 6)
+
     def test_arrived_speakers(self):
         with scope(event=self.event):
             tammy = SpeakerProfile.objects.get(id=2)

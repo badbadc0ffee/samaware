@@ -1,5 +1,6 @@
 from itertools import chain
 
+from django.db.models import Q
 from django.utils import timezone
 from django_scopes import scopes_disabled
 from pretalx.person.models import SpeakerProfile
@@ -13,7 +14,9 @@ def get_all_speakers(event):
     released schedule, whereas this considers the current submission states.
     """
 
-    accepted_submissions = event.submissions.filter(state__in=SubmissionStates.accepted_states)
+    accepted_submissions = event.submissions.filter(
+        Q(state__in=SubmissionStates.accepted_states) | Q(pending_state__in=SubmissionStates.accepted_states)
+    )
     profiles = SpeakerProfile.objects.filter(user__submissions__in=accepted_submissions)
 
     return profiles.distinct()
