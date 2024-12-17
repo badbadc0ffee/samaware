@@ -30,6 +30,9 @@ class DashboardTest(ViewsTestCase):
         self.assertEqual(len(response.context['total_speakers']), 5)
         self.assertEqual(len(response.context['slots_missing_speakers']), 2)
 
+        # htmx requires this, see comment in "views.py" for details
+        self.assertIn("script-src 'self' 'unsafe-eval';", response.headers['Content-Security-Policy'])
+
 
 class TalkOverviewTest(ViewsTestCase):
 
@@ -148,3 +151,36 @@ class NoRecordingListTest(ViewsTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['slots']), 1)
+
+
+class SearchFragmentTest(ViewsTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.path = reverse('plugins:samaware:search_fragment', kwargs={'event': self.event.slug})
+
+    def test_no_query(self):
+        response = self.client.get(self.path)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['slots']), 5)
+
+        for slot in response.context['slots']:
+            for user in slot.submission.speakers.all():
+                self.assertIn(user, response.context['event_profiles'])
+
+    def test_submission_query(self):
+        response = self.client.get(self.path + '?query=ReCiPrOcAl')
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(len(response.context['slots']), 1)
+        self.assertEqual(response.context['slots'][0].submission.code, 'H7HMGF')
+
+    def test_speaker_query(self):
+        response = self.client.get(self.path + '?query=richard')
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(len(response.context['slots']), 1)
+        self.assertEqual(response.context['slots'][0].submission.code, 'M89B9Q')

@@ -13,7 +13,7 @@ authors = [
 license = {text = "ISC"}
 readme = "README.md"
 
-dependencies = ["django-context-decorator", "django-scopes"]
+dependencies = ["django-context-decorator", "django-csp<4.0", "django-scopes"]
 
 [project.optional-dependencies]
 dev = ["ruff", "pylint"]

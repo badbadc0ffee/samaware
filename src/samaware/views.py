@@ -1,5 +1,8 @@
 import datetime
 
+from csp.decorators import csp_update
+from django.db.models import Q
+from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, ListView, TemplateView
 from django_context_decorator import context
 from pretalx.common.views.mixins import EventPermissionRequired, PermissionRequired, Sortable
@@ -10,6 +13,11 @@ import samaware
 from . import forms, queries
 
 
+# htmx requires 'unsafe-eval' for its "delay" Modifier
+# We could probably do cool stuff with nonces (`htmx.config.inlineScriptNonce`), but that would require
+# nonces to be globally enabled for script-src from the pretalx config
+# Given that this is only 'unsafe-eval' (*not* 'unsafe-inline'), I can live with it for now
+@method_decorator(csp_update(SCRIPT_SRC="'unsafe-eval'"), name='dispatch')
 class Dashboard(EventPermissionRequired, TemplateView):
 
     permission_required = samaware.REQUIRED_PERMISSIONS
@@ -114,3 +122,26 @@ class NoRecordingList(EventPermissionRequired, Sortable, ListView):
     @context
     def filter_form(self):
         return forms.NoRecordingFilter(self.request.GET)
+
+
+class SearchFragment(EventPermissionRequired, TemplateView):
+
+    permission_required = samaware.REQUIRED_PERMISSIONS
+    template_name = 'samaware/fragments/search_result.html'
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+
+        slots = self.request.event.wip_schedule.talks
+        speakers = queries.get_all_speakers(self.request.event).select_related('user')
+
+        query = self.request.GET.get('query')
+        if query:
+            users = speakers.filter(user__name__icontains=query).values_list('user', flat=True)
+            slots = slots.filter(Q(submission__title__icontains=query) | Q(submission__speakers__in=users))
+
+        data['slots'] = slots.order_by('submission__title') \
+                             .select_related('submission', 'submission__track', 'submission__event', 'room')
+        data['event_profiles'] = {profile.user: profile for profile in speakers}
+
+        return data
