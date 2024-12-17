@@ -23,6 +23,14 @@
 
 <h2>{{ slots.count}} {% translate 'talks without recording' %}</h2>
 
+<noscript>
+    <div class="alert alert-danger" role="alert">
+        {% blocktranslate trimmed %}
+        Filtering requires JavaScript to be enabled.
+        {% endblocktranslate %}
+    </div>
+</noscript>
+
 <div class="submit-group">
     <form action="." method="GET" class="samaware-list-filter">
         {{ filter_form.as_div }}

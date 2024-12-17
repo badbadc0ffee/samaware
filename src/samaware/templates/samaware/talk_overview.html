@@ -37,6 +37,14 @@
     </p>
 </h2>
 
+<noscript>
+    <div class="alert alert-danger" role="alert">
+        {% blocktranslate trimmed %}
+        This page requires JavaScript to be enabled.
+        {% endblocktranslate %}
+    </div>
+</noscript>
+
 {% if not submission_is_confirmed %}
 <div class="alert alert-warning" role="alert">
     {% with submission.get_state_display as state_display %}

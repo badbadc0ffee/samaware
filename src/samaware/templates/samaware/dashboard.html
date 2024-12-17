@@ -97,6 +97,14 @@
 <article class="mt-3">
     <h3 class="sr-only">{% trans 'Talk Search' %}</h3>
 
+    <noscript>
+        <div class="alert alert-danger" role="alert">
+            {% blocktranslate trimmed %}
+            Search requires JavaScript to be enabled.
+            {% endblocktranslate %}
+        </div>
+    </noscript>
+
     <input type="search" name="query" class="mt-3 mb-3" placeholder="{% trans 'Type to search for talks or speakers' %}"
            hx-get="{% url 'plugins:samaware:search_fragment' event=request.event.slug %}"
            hx-trigger="load, input changed delay:300ms, keyup[key=='Enter']" hx-target="#samaware-search-results" />
