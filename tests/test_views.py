@@ -184,3 +184,38 @@ class SearchFragmentTest(ViewsTestCase):
 
         self.assertEqual(len(response.context['slots']), 1)
         self.assertEqual(response.context['slots'][0].submission.code, 'M89B9Q')
+
+
+class InternalNotesFragmentTest(ViewsTestCase):
+
+    def setUp(self):
+        super().setUp()
+
+        with scope(event=self.event):
+            self.submission = Submission.objects.get(id=1, event=self.event)
+
+        self.path = reverse('plugins:samaware:internal_notes_fragment',
+                            kwargs={'event': self.event.slug, 'code': self.submission.code})
+
+    def test_get(self):
+        response = self.client.get(self.path)
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(response.context['object'], self.submission)
+        self.assertContains(response, 'Internal Notes')
+        self.assertContains(response, '<form')
+
+    def test_post(self):
+        note = 'Hello from the otter slide'
+        response = self.client.post(self.path, {'internal_notes': note})
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertContains(response, note)
+        self.assertNotContains(response, '<form')
+
+        with scope(event=self.event):
+            submission = Submission.objects.get(id=self.submission.id)
+
+        self.assertEqual(submission.internal_notes, note)

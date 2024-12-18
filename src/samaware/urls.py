@@ -27,5 +27,10 @@ urlpatterns = [
         'orga/event/<slug:event>/p/samaware/fragments/search',
         views.SearchFragment.as_view(),
         name='search_fragment'
+    ),
+    path(
+        'orga/event/<slug:event>/p/samaware/fragments/internal-notes/<code>',
+        views.InternalNotesFragment.as_view(),
+        name='internal_notes_fragment'
     )
 ]

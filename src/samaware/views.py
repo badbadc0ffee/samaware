@@ -2,8 +2,10 @@ import datetime
 
 from csp.decorators import csp_update
 from django.db.models import Q
+from django.template.defaultfilters import linebreaks_filter
 from django.utils.decorators import method_decorator
-from django.views.generic import DetailView, ListView, TemplateView
+from django.utils.translation import gettext as _
+from django.views.generic import DetailView, ListView, TemplateView, UpdateView
 from django_context_decorator import context
 from pretalx.common.views.mixins import EventPermissionRequired, PermissionRequired, Sortable
 from pretalx.submission.models.submission import Submission, SubmissionStates
@@ -145,3 +147,34 @@ class SearchFragment(EventPermissionRequired, TemplateView):
         data['event_profiles'] = {profile.user: profile for profile in speakers}
 
         return data
+
+
+class InternalNotesFragment(PermissionRequired, UpdateView):
+
+    permission_required = samaware.REQUIRED_PERMISSIONS
+    model = Submission
+    slug_field = 'code'
+    slug_url_kwarg = 'code'
+    form_class = forms.InternalNotesForm
+    template_name = 'samaware/fragments/form_or_content.html'
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+
+        data['headline'] = _('Internal Notes')
+        data['show_form'] = True
+        data['fragment_target'] = self.request.path
+
+        return data
+
+    def form_valid(self, form):
+        self.object = form.save()  # pylint: disable=W0201
+
+        data = self.get_context_data()
+        data['show_form'] = False
+        if self.object.internal_notes:
+            data['content'] = linebreaks_filter(self.object.internal_notes)
+        else:
+            data['content'] = ''
+
+        return self.render_to_response(data)

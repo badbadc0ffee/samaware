@@ -15,6 +15,7 @@
 
 {% block scripts %}
 {% compress js %}
+<script src="{% static 'samaware/vendor/htmx.min.js' %}"></script>
 <script src="{% static 'samaware/samaware.js' %}" defer="defer"></script>
 {% endcompress %}
 {% endblock scripts %}
@@ -126,14 +127,15 @@
                 <h3>{% trans 'Tech Rider' %}</h3>
                 TODO
 
-                {% if submission.internal_notes %}
-                <h3>{% trans 'Internal Notes' %}</h3>
-                {{ submission.internal_notes|linebreaks }}
-                {% endif %}
+                {% trans 'Internal Notes' as internal_notes_title %}
+                {% url 'plugins:samaware:internal_notes_fragment' event=request.event.slug code=submission.code as internal_notes_url %}
+                {% include 'samaware/fragments/form_or_content.html' with headline=internal_notes_title show_form=False fragment_target=internal_notes_url content=submission.internal_notes|linebreaks only %}
 
-                {% if submission.notes %}
                 <h3>{% trans 'Submitter Notes' %}</h3>
+                {% if submission.notes %}
                 {{ submission.notes|linebreaks }}
+                {% else %}
+                <em>{% trans 'None' %}</em>
                 {% endif %}
 
                 <h3>{% trans 'RT Ticket' %}</h3>

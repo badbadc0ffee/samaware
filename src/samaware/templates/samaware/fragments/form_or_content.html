@@ -1,0 +1,30 @@
+{% load i18n %}
+
+<div hx-target="this" hx-swap="outerHTML">
+    <h3 class="d-flex align-items-start">
+        {{ headline }}
+        {% if not show_form %}
+        <button type="button" class="btn btn-sm btn-info ml-auto" hx-get="{{ fragment_target }}">
+            {% trans 'Edit' %}
+        </button>
+        {% endif %}
+    </h3>
+
+    {% if show_form %}
+
+    <form class="samaware-fragment-form" hx-post="{{ fragment_target }}">
+        {% csrf_token %}
+        {{ form.as_div }}
+        <button type="submit" class="btn btn-sm btn-success mt-1">{% trans 'Save' %}</button>
+    </form>
+
+    {% else %}
+
+    {% if content %}
+    {{ content }}
+    {% else %}
+    <em>{% trans 'None' %}</em>
+    {% endif %}
+
+    {% endif %}
+</div>

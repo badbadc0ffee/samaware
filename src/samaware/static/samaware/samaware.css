@@ -64,6 +64,12 @@
     }
 }
 
+.samaware-fragment-form {
+    label, .helptext {
+        display: none;
+    }
+}
+
 .samaware-list-filter {
     /* See https://stackoverflow.com/a/17808895 */
     input[type="checkbox"] {
