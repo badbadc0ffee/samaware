@@ -5,7 +5,7 @@
         {{ headline }}
         {% if not show_form %}
         <button type="button" class="btn btn-sm btn-info ml-auto" hx-get="{{ fragment_target }}">
-            {% trans 'Edit' %}
+            {% translate 'Edit' %}
         </button>
         {% endif %}
     </h3>
@@ -15,7 +15,7 @@
     <form class="samaware-fragment-form" hx-post="{{ fragment_target }}">
         {% csrf_token %}
         {{ form.as_div }}
-        <button type="submit" class="btn btn-sm btn-success mt-1">{% trans 'Save' %}</button>
+        <button type="submit" class="btn btn-sm btn-success mt-1">{% translate 'Save' %}</button>
     </form>
 
     {% else %}
@@ -23,7 +23,7 @@
     {% if content %}
     {{ content }}
     {% else %}
-    <em>{% trans 'None' %}</em>
+    <em>{% translate 'None' %}</em>
     {% endif %}
 
     {% endif %}
