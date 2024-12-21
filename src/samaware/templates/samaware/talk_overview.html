@@ -146,12 +146,13 @@
                 &nbsp;{% translate 'Being streamed/recorded' %}
                 {% endif %}
 
-                <h3>{% translate 'Tech Rider' %}</h3>
-                TODO
+                <h3>{% translate 'Tech Rider' as tech_rider_title %}</h3>
+                {% url 'plugins:samaware:tech_rider_fragment' event=request.event.slug code=submission.code as tech_rider_url %}
+                {% include 'samaware/fragments/form_or_content.html' with headline=tech_rider_title show_form=False fragment_target=tech_rider_url content=submission.tech_rider.text|rich_text only %}
 
                 {% translate 'Internal Notes' as internal_notes_title %}
                 {% url 'plugins:samaware:internal_notes_fragment' event=request.event.slug code=submission.code as internal_notes_url %}
-                {% include 'samaware/fragments/form_or_content.html' with headline=internal_notes_title show_form=False fragment_target=internal_notes_url content=submission.internal_notes|linebreaks only %}
+                {% include 'samaware/fragments/form_or_content.html' with headline=internal_notes_title show_form=False fragment_target=internal_notes_url content=submission.internal_notes|default:''|linebreaks only %}
 
                 <h3>{% translate 'Submitter Notes' %}</h3>
                 {% if submission.notes %}

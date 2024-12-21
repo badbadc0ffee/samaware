@@ -20,7 +20,7 @@
 
     {% else %}
 
-    {% if content %}
+    {% if content|striptags %}
     {{ content }}
     {% else %}
     <em>{% translate 'None' %}</em>

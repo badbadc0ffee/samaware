@@ -1,0 +1,98 @@
+{% extends "orga/base.html" %}
+
+{% load compress %}
+{% load i18n %}
+{% load rich_text %}
+{% load static %}
+
+{% block stylesheets %}
+{% compress css %}
+<link rel="stylesheet" href="{% static 'samaware/samaware.css' %}">
+{% endcompress %}
+{% endblock stylesheets %}
+
+{% block scripts %}
+{% compress js %}
+<script src="{% static 'samaware/samaware.js' %}" defer="defer"></script>
+{% endcompress %}
+{% endblock scripts %}
+
+{% block extra_title %}{{ slots.count }} {% translate 'Tech Riders' %} :: SamAware :: {% endblock extra_title %}
+
+{% block content %}
+
+<h2 class="d-flex align-items-center">
+    {{ slots.count }} {% translate 'Tech Riders' %}
+    <p class="ml-auto">
+        <a href="{% url 'plugins:samaware:tech_rider_create' event=request.event.slug %}" class="btn btn-info  mt-2">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+            &nbsp;{% translate 'Add' %}
+        </a>
+    </p>
+</h2>
+
+<div class="alert alert-info" role="definition">{% blocktranslate trimmed %}
+    Tech Riders contain special technical requirements for a talk.
+{% endblocktranslate %}</div>
+
+<noscript>
+    <div class="alert alert-danger" role="alert">
+        {% blocktranslate trimmed %}
+        Filtering requires JavaScript to be enabled.
+        {% endblocktranslate %}
+    </div>
+</noscript>
+
+<div class="submit-group">
+    <form method="GET" class="samaware-list-filter">
+        {{ filter_form.as_div }}
+    </form>
+</div>
+
+<div class="table-responsive">
+    <table class="table-sticky">
+        <thead>
+            <tr>
+                <th>
+                    {% translate 'Talk' %}
+                    <a href="{% querystring sort='submission__title' %}"><i class="fa fa-caret-down" title="{% translate 'Sort (a-z)' %}"></i></a>
+                    <a href="{% querystring sort='-submission__title' %}"><i class="fa fa-caret-up" title="{% translate 'Sort (z-a)' %}"></i></a>
+                </th>
+                <th>
+                    {% translate 'Start' %}
+                    <a href="{% querystring sort='start' %}"><i class="fa fa-caret-down" title="{% translate 'Sort (soon-late)' %}"></i></a>
+                    <a href="{% querystring sort='-start' %}"><i class="fa fa-caret-up" title="{% translate 'Sort (late-soon)' %}"></i></a>
+                </th>
+                <th>
+                    {% translate 'Room' %}
+                    <a href="{% querystring sort='room' %}"><i class="fa fa-caret-down" title="{% translate 'Sort (a-z)' %}"></i></a>
+                    <a href="{% querystring sort='-room' %}"><i class="fa fa-caret-up" title="{% translate 'Sort (z-a)' %}"></i></a>
+                </th>
+                <th>
+                    {% translate 'Text' %}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for slot in slots %}
+            {% url 'plugins:samaware:tech_rider_update' event=slot.event.slug pk=slot.submission.tech_rider.pk as rider_url %}
+            <tr>
+                <td>
+                    <a href="{{ rider_url }}">{{ slot.submission.title }}</a>
+                </td>
+                <td>
+                    {{ slot.start|date:'SHORT_DATETIME_FORMAT' }}
+                </td>
+                <td>
+                    {{ slot.room }}
+                </td>
+                <td>
+                    <a href="{{ rider_url }}">{{ slot.submission.tech_rider.text|rich_text|striptags|truncatechars:50 }}</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock content %}

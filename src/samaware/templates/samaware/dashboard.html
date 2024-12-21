@@ -61,16 +61,16 @@
         </a>
     </div>
     <div class="dashboard-block-wrapper">
-        <a href="/todo" class="dashboard-block dashboard-block-extended">
-            <h1>0</h1>
+        <a href="{% url 'plugins:samaware:tech_rider_list' event=request.event.slug %}" class="dashboard-block dashboard-block-extended">
+            <h1>{{ tech_riders.count }}</h1>
             <div class="dashboard-description">
                 {% translate 'tech riders' %}
             </div>
         </a>
         <div class="dashboard-block-extension">
-            <div class="dashboard-block-addon dashboard-block-addon-info">
-                {% translate 'next 4 hours' %}: 0
-            </div>
+            <a href="{% url 'plugins:samaware:tech_rider_list' event=request.event.slug %}?upcoming=on" class="dashboard-block-addon dashboard-block-addon-info">
+                {% translate 'next 4 hours' %}: {{ tech_riders_4h.count }}
+            </a>
             <a href="/todo" class="dashboard-block-addon dashboard-block-addon-success">
                 {% translate 'unsynced' %}: 0
             </a>
@@ -87,8 +87,8 @@
             <a href="{% url 'plugins:samaware:no_recording' event=request.event.slug %}?upcoming=on" class="dashboard-block-addon dashboard-block-addon-info">
                 {% translate 'next 4 hours' %}: {{ no_recording_slots_4h.count }}
             </a>
-            <a href="/todo" class="dashboard-block-addon dashboard-block-addon-error">
-                {% translate 'without tech rider' %}: 5
+            <a href="{% url 'plugins:samaware:no_recording' event=request.event.slug %}?no_rider=on" class="dashboard-block-addon dashboard-block-addon-{{ no_recording_no_rider_slots.count | count_class }}">
+                {% translate 'without tech rider' %}: {{ no_recording_no_rider_slots.count }}
             </a>
         </div>
     </div>

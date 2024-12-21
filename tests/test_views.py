@@ -7,7 +7,7 @@ from pretalx.person.models.user import User
 from pretalx.schedule.models import TalkSlot
 from pretalx.submission.models import Submission, SubmissionStates
 
-from samaware.models import SpeakerCareMessage
+from samaware.models import SpeakerCareMessage, TechRider
 
 from .lib import SamawareTestCase
 
@@ -142,17 +142,145 @@ class NoRecordingListTest(ViewsTestCase):
         super().setUp()
         self.path = reverse('plugins:samaware:no_recording', kwargs={'event': self.event.slug})
 
-    def test_upcoming_off(self):
+    def test_default(self):
         response = self.client.get(self.path)
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['slots']), 2)
 
-    def test_upcoming_on(self):
+    def test_upcoming(self):
         response = self.client.get(self.path + '?upcoming=on')
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['slots']), 1)
+
+    def test_no_rider(self):
+        response = self.client.get(self.path + '?no_rider=on')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['slots']), 2)
+
+        with scope(event=self.event):
+            submission = self.event.talks.filter(do_not_record=True).first()
+            rider = TechRider(event=self.event, author=self.admin, submission=submission,
+                              text='We are gonna need > 9000 couches on stage.')
+            rider.save()
+
+        response = self.client.get(self.path + '?no_rider=on')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['slots']), 1)
+
+
+class TechRiderTest(ViewsTestCase):
+
+    def setUp(self):
+        super().setUp()
+
+        with scope(event=self.event):
+            self.submission = Submission.objects.get(id=1, event=self.event)
+
+    def add_rider(self):
+        with scope(event=self.event):
+            rider = TechRider(event=self.event, author=self.admin, submission=self.submission,
+                              text='We are gonna need > 9000 couches on stage.')
+            rider.save()
+
+        return rider
+
+    def test_list(self):
+        path = reverse('plugins:samaware:tech_rider_list', kwargs={'event': self.event.slug})
+
+        response = self.client.get(path)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['slots']), 0)
+
+        self.add_rider()
+        with scope(event=self.event):
+            submission_4 = Submission.objects.get(id=4, event=self.event)
+            rider = TechRider(event=self.event, author=self.admin, submission=submission_4,
+                              text='If the others get them, we also want couches!')
+            rider.save()
+
+        response = self.client.get(path)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['slots']), 2)
+
+        response = self.client.get(path + '?upcoming=on')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['slots']), 1)
+
+    def test_create(self):
+        path = reverse('plugins:samaware:tech_rider_create', kwargs={'event': self.event.slug})
+
+        response = self.client.get(path)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn('object', response.context)
+
+        text = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+        response = self.client.post(path, {'submission': self.submission.pk, 'text': text})
+        self.assertEqual(response.status_code, 302)
+
+        with scope(event=self.event):
+            riders = self.event.tech_riders.all()
+
+        self.assertEqual(len(riders), 1)
+        self.assertEqual(riders[0].submission, self.submission)
+        self.assertEqual(riders[0].text, text)
+        self.assertEqual(riders[0].author, self.admin)
+
+    def test_update(self):
+        rider = self.add_rider()
+
+        path = reverse('plugins:samaware:tech_rider_update', kwargs={'event': self.event.slug,
+                                                                     'pk': rider.pk})
+
+        response = self.client.get(path)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['object'], rider)
+
+        text = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+        response = self.client.post(path, {'submission': rider.submission.pk, 'text': text})  # pylint: disable=E1101
+        self.assertEqual(response.status_code, 302)
+
+        with scope(event=self.event):
+            riders = self.event.tech_riders.all()
+
+        self.assertEqual(len(riders), 1)
+        self.assertEqual(riders[0].text, text)
+
+    def test_delete(self):
+        rider = self.add_rider()
+
+        path = reverse('plugins:samaware:tech_rider_delete', kwargs={'event': self.event.slug,
+                                                                     'pk': rider.pk})
+
+        response = self.client.get(path)
+        self.assertEqual(response.status_code, 200)
+
+        with scope(event=self.event):
+            riders = self.event.tech_riders.all()
+
+        self.assertEqual(len(riders), 1)
+
+        response = self.client.post(path)
+        self.assertEqual(response.status_code, 302)
+
+        with scope(event=self.event):
+            riders = self.event.tech_riders.all()
+
+        self.assertEqual(len(riders), 0)
+
+    def test_no_permission(self):
+        rider = self.add_rider()
+
+        self.client.logout()
+        self.client.force_login(self.submission.speakers.first())
+
+        path = reverse('plugins:samaware:tech_rider_update', kwargs={'event': self.event.slug,
+                                                                     'pk': rider.pk})
+        response = self.client.post(path, {'submission': self.submission.pk,
+                                           'text': 'Hello from the speaker'})
+
+        self.assertEqual(response.status_code, 404)
 
 
 class CareMessageTest(ViewsTestCase):
@@ -247,15 +375,6 @@ class CareMessageTest(ViewsTestCase):
 
         self.assertEqual(len(messages), 0)
 
-    def test_no_permission(self):
-        self.client.logout()
-        self.client.force_login(self.speaker)
-
-        path = reverse('plugins:samaware:care_message_create', kwargs={'event': self.event.slug})
-        response = self.client.post(path, {'speaker': self.speaker.pk, 'text': 'Hello world'})
-
-        self.assertEqual(response.status_code, 404)
-
     def test_talk_overview(self):
         self.add_message()
         with scope(event=self.event):
@@ -336,3 +455,39 @@ class InternalNotesFragmentTest(ViewsTestCase):
             submission = Submission.objects.get(id=self.submission.id)
 
         self.assertEqual(submission.internal_notes, note)
+
+
+class TechRiderFragmentTest(ViewsTestCase):
+
+    def setUp(self):
+        super().setUp()
+
+        with scope(event=self.event):
+            self.submission = Submission.objects.get(id=1, event=self.event)
+
+        self.path = reverse('plugins:samaware:tech_rider_fragment',
+                            kwargs={'event': self.event.slug, 'code': self.submission.code})
+
+    def test_get(self):
+        response = self.client.get(self.path)
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertNotIn('object', response.context)
+        self.assertEqual(response.context['form']['submission'].widget_type, 'hidden')
+        self.assertContains(response, 'Tech Rider')
+        self.assertContains(response, '<form')
+
+    def test_post(self):
+        text = 'SCART video input is required on stage.'
+        response = self.client.post(self.path, {'submission': self.submission.pk, 'text': text})
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertContains(response, text)
+        self.assertNotContains(response, '<form')
+
+        with scope(event=self.event):
+            rider = self.event.tech_riders.get(submission=self.submission)
+
+        self.assertEqual(rider.text, text)

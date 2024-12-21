@@ -24,6 +24,26 @@ urlpatterns = [
         name='no_recording'
     ),
     path(
+        'orga/event/<slug:event>/p/samaware/tech-riders/',
+        views.TechRiderList.as_view(),
+        name='tech_rider_list'
+    ),
+    path(
+        'orga/event/<slug:event>/p/samaware/tech-riders/new',
+        views.TechRiderEdit.as_view(),
+        name='tech_rider_create'
+    ),
+    path(
+        'orga/event/<slug:event>/p/samaware/tech-riders/<int:pk>',
+        views.TechRiderEdit.as_view(),
+        name='tech_rider_update'
+    ),
+    path(
+        'orga/event/<slug:event>/p/samaware/tech-riders/<int:pk>/delete',
+        views.TechRiderDelete.as_view(),
+        name='tech_rider_delete'
+    ),
+    path(
         'orga/event/<slug:event>/p/samaware/care-messages/',
         views.CareMessageList.as_view(),
         name='care_message_list'
@@ -52,5 +72,10 @@ urlpatterns = [
         'orga/event/<slug:event>/p/samaware/fragments/internal-notes/<code>',
         views.InternalNotesFragment.as_view(),
         name='internal_notes_fragment'
+    ),
+    path(
+        'orga/event/<slug:event>/p/samaware/fragments/tech-rider/<code>',
+        views.TechRiderFragment.as_view(),
+        name='tech_rider_fragment'
     )
 ]

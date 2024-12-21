@@ -5,10 +5,12 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.template.defaultfilters import linebreaks_filter
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
 from django.views.generic import DeleteView, DetailView, ListView, TemplateView, UpdateView
 from django_context_decorator import context
+from pretalx.common.templatetags.rich_text import rich_text as rich_text_filter
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.common.views.mixins import (
     ActionConfirmMixin,
@@ -37,14 +39,18 @@ class Dashboard(EventPermissionRequired, TemplateView):
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
 
+        no_recording_slots = queries.get_slots_without_recording(self.request.event)
+
         data['total_speakers'] = queries.get_all_speakers(self.request.event)
         data['arrived_speakers'] = queries.get_arrived_speakers(self.request.event)
-        data['unreleased_changes'] = self.request.event.wip_schedule.changes
-        data['speaker_care_messages'] = self.request.event.speaker_care_messages.all()
-        data['no_recording_slots'] = queries.get_slots_without_recording(self.request.event)
-
         data['slots_missing_speakers'] = queries.get_slots_missing_speakers(self.request.event,
                                                                             self.timeframe)
+        data['unreleased_changes'] = self.request.event.wip_schedule.changes
+        data['speaker_care_messages'] = self.request.event.speaker_care_messages.all()
+        data['tech_riders'] = self.request.event.tech_riders.all()
+        data['tech_riders_4h'] = models.TechRider.upcoming_objects(self.request.event, self.timeframe)
+        data['no_recording_slots'] = no_recording_slots
+        data['no_recording_no_rider_slots'] = no_recording_slots.filter(submission__tech_rider__isnull=True)
         data['no_recording_slots_4h'] = queries.get_slots_without_recording(self.request.event,
                                                                             self.timeframe)
 
@@ -110,7 +116,7 @@ class MissingSpeakersList(EventPermissionRequired, Sortable, ListView):
 
     @context
     def filter_form(self):
-        return forms.MissingSpeakerFilter(self.request.GET)
+        return forms.UpcomingFilter(self.request.GET)
 
 
 class NoRecordingList(EventPermissionRequired, Sortable, ListView):
@@ -124,11 +130,15 @@ class NoRecordingList(EventPermissionRequired, Sortable, ListView):
 
     def get_queryset(self):
         filter_form = self.filter_form()
+
         if filter_form.is_valid() and filter_form.cleaned_data.get('upcoming'):
             slots = queries.get_slots_without_recording(self.request.event,
                                                         timeframe=self.upcoming_timeframe)
         else:
             slots = queries.get_slots_without_recording(self.request.event)
+
+        if filter_form.is_valid() and filter_form.cleaned_data.get('no_rider'):
+            slots = slots.filter(submission__tech_rider__isnull=True)
 
         slots = self.sort_queryset(slots)
         return slots.select_related('submission', 'submission__track', 'submission__event', 'room')
@@ -136,6 +146,108 @@ class NoRecordingList(EventPermissionRequired, Sortable, ListView):
     @context
     def filter_form(self):
         return forms.NoRecordingFilter(self.request.GET)
+
+
+class TechRiderList(EventPermissionRequired, Sortable, ListView):
+
+    permission_required = samaware.REQUIRED_PERMISSIONS
+    sortable_fields = ('submission__title', 'start', 'room')
+    default_sort_field = 'submission__title'
+    template_name = 'samaware/tech_rider_list.html'
+    context_object_name = 'slots'
+    upcoming_timeframe = datetime.timedelta(hours=4)
+
+    def get_queryset(self):
+        slots = self.request.event.wip_schedule.talks.filter(submission__tech_rider__isnull=False)
+
+        filter_form = self.filter_form()
+        if filter_form.is_valid() and filter_form.cleaned_data.get('upcoming'):
+            now = timezone.now()
+            upcoming_threshold = now + self.upcoming_timeframe
+            slots = slots.filter(start__gt=now, start__lt=upcoming_threshold)
+
+        slots = self.sort_queryset(slots)
+        return slots.select_related('submission', 'submission__tech_rider', 'submission__event', 'room')
+
+    @context
+    def filter_form(self):
+        return forms.UpcomingFilter(self.request.GET)
+
+
+class BaseTechRiderEdit(PermissionRequired, CreateOrUpdateView):
+
+    permission_required = samaware.REQUIRED_PERMISSIONS
+    model = models.TechRider
+    form_class = forms.TechRiderForm
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.object = None
+
+    def get_permission_object(self):
+        obj = self.get_object()
+        if obj:
+            return obj.submission
+        else:
+            return self.request.event
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.event = self.request.event
+        self.object.author = self.request.user
+
+        self.object.save()
+
+        return HttpResponseRedirect(self.get_success_url())
+
+
+class TechRiderEdit(BaseTechRiderEdit):
+
+    template_name = 'samaware/tech_rider_edit.html'
+
+    def get_object(self, queryset=None):
+        if self.object is not None:
+            return self.object
+
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        if 'pk' in self.kwargs:
+            return queryset.get(pk=self.kwargs['pk'], event=self.request.event)
+        else:
+            return None
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+
+        submissions_filter = Q(state__in=SubmissionStates.accepted_states) | \
+                             Q(pending_state__in=SubmissionStates.accepted_states)
+        if self.object:
+            submissions_filter |= Q(pk=self.object.submission.pk)
+        kwargs['submission_queryset'] = self.request.event.submissions.filter(submissions_filter)
+
+        return kwargs
+
+
+class TechRiderDelete(PermissionRequired, ActionConfirmMixin, DeleteView):
+
+    permission_required = samaware.REQUIRED_PERMISSIONS
+    model = models.TechRider
+
+    def get_permission_object(self):
+        return self.get_object().submission
+
+    @property
+    def action_object_name(self):
+        return _('Tech Rider for:') + ' ' + self.get_object().submission.title
+
+    @property
+    def action_back_url(self):
+        return self.get_object().get_absolute_url()
+
+    @property
+    def success_url(self):
+        return reverse('plugins:samaware:tech_rider_list', kwargs={'event': self.get_object().event.slug})
 
 
 class CareMessageList(EventPermissionRequired, ListView):
@@ -258,9 +370,55 @@ class InternalNotesFragment(PermissionRequired, UpdateView):
 
         data = self.get_context_data()
         data['show_form'] = False
-        if self.object.internal_notes:
-            data['content'] = linebreaks_filter(self.object.internal_notes)
-        else:
-            data['content'] = ''
+        data['content'] = linebreaks_filter(self.object.internal_notes)
+
+        return self.render_to_response(data)
+
+
+class TechRiderFragment(BaseTechRiderEdit):
+
+    slug_url_kwarg = 'code'
+    template_name = 'samaware/fragments/form_or_content.html'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.object = None
+        self.submission = None
+
+    def get_object(self, queryset=None):
+        if self.object is not None:
+            return self.object
+
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        self.submission = Submission.objects.get(code=self.kwargs[self.slug_url_kwarg],
+                                                 event=self.request.event)
+        return queryset.filter(submission=self.submission, event=self.request.event).first()
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+
+        data['headline'] = _('Tech Rider')
+        data['show_form'] = True
+        data['fragment_target'] = self.request.path
+
+        return data
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+
+        kwargs['submission_initial'] = self.submission
+        kwargs['submission_queryset'] = Submission.objects.filter(pk=self.submission.pk)
+        kwargs['hide_submission_field'] = True
+
+        return kwargs
+
+    def form_valid(self, form):
+        super().form_valid(form)
+
+        data = self.get_context_data()
+        data['show_form'] = False
+        data['content'] = rich_text_filter(self.object.text)
 
         return self.render_to_response(data)

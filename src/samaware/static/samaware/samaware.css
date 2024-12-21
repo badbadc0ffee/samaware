@@ -43,6 +43,11 @@
             color: var(--color-warning-text-dark);
         }
     }
+
+    .dashboard-block-addon.dashboard-block-addon-warning {
+        background-color: var(--color-warning-light);
+        color: var(--color-grey-dark);
+    }
 }
 
 .samaware-card {
