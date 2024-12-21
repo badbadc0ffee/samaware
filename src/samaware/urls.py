@@ -24,6 +24,26 @@ urlpatterns = [
         name='no_recording'
     ),
     path(
+        'orga/event/<slug:event>/p/samaware/care-messages/',
+        views.CareMessageList.as_view(),
+        name='care_message_list'
+    ),
+    path(
+        'orga/event/<slug:event>/p/samaware/care-messages/new',
+        views.CareMessageEdit.as_view(),
+        name='care_message_create'
+    ),
+    path(
+        'orga/event/<slug:event>/p/samaware/care-messages/<int:pk>',
+        views.CareMessageEdit.as_view(),
+        name='care_message_update'
+    ),
+    path(
+        'orga/event/<slug:event>/p/samaware/care-messages/<int:pk>/delete',
+        views.CareMessageDelete.as_view(),
+        name='care_message_delete'
+    ),
+    path(
         'orga/event/<slug:event>/p/samaware/fragments/search',
         views.SearchFragment.as_view(),
         name='search_fragment'

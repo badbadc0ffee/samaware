@@ -1,0 +1,52 @@
+{% extends "orga/base.html" %}
+
+{% load i18n %}
+
+{% block extra_title %}{{ care_messages.count }} {% translate 'Speaker Care Messages' %} :: SamAware :: {% endblock extra_title %}
+
+{% block content %}
+
+<h2 class="d-flex align-items-center">
+    {{ care_messages.count }} {% translate 'Speaker Care Messages' %}
+    <p class="ml-auto">
+        <a href="{% url 'plugins:samaware:care_message_create' event=request.event.slug %}" class="btn btn-info  mt-2">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+            &nbsp;{% translate 'Add' %}
+        </a>
+    </p>
+</h2>
+
+<div class="alert alert-info" role="definition">{% blocktranslate trimmed %}
+    Speaker Care Messages contain internal information on a speaker that will be displayed prominently when
+    accessing the speaker or their talks.
+{% endblocktranslate %}</div>
+
+<div class="table-responsive">
+    <table class="table-sticky">
+        <thead>
+            <tr>
+                <th>
+                    {% translate 'Speaker' %}
+                </th>
+                <th>
+                    {% translate 'Text' %}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for message in care_messages %}
+            {% url 'plugins:samaware:care_message_update' event=message.event.slug pk=message.pk as message_url %}
+            <tr>
+                <td>
+                    <a href="{{ message_url }}">{{ message.speaker.name }}</a>
+                </td>
+                <td>
+                    <a href="{{ message_url }}">{{ message.text|truncatechars:100 }}</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock content %}

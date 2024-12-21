@@ -53,10 +53,10 @@
         </a>
     </div>
     <div class="dashboard-block-wrapper">
-        <a href="/todo" class="dashboard-block">
-            <h1>1</h1>
+        <a href="{% url 'plugins:samaware:care_message_list' event=request.event.slug %}" class="dashboard-block">
+            <h1>{{ speaker_care_messages.count }}</h1>
             <div class="dashboard-description">
-                {% translate 'speaker care notes' %}
+                {% translate 'speaker care messages' %}
             </div>
         </a>
     </div>

@@ -77,6 +77,28 @@
 </div>
 {% endif %}
 
+{% for message in speaker_care_messages %}
+<div class="alert alert-warning" role="alert">
+    <div>
+        <div class="d-flex align-items-start justify-content-between">
+            <p>{% blocktranslate trimmed with speaker_name=message.speaker.name %}
+                <strong>Speaker Care Message available</strong> regarding {{ speaker_name }}:
+            {% endblocktranslate %}</p>
+
+            <a href="{{ message.get_absolute_url }}" class="btn btn-sm btn-info">
+                {% trans 'Edit or delete' %}
+            </a>
+        </div>
+
+        {{ message.text|linebreaks }}
+
+        <p><em>{% blocktranslate trimmed with author=message.author updated=message.updated|date:'SHORT_DATETIME_FORMAT' %}
+            Last updated by {{ author }} at {{ updated }}
+        {% endblocktranslate %}</em></p>
+    </div>
+</div>
+{% endfor %}
+
 <div class="row">
     <div class="col-md-6">
         <div class="card samaware-card">

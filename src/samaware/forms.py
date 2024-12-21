@@ -1,6 +1,9 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
+from pretalx.common.forms.widgets import EnhancedSelect
 from pretalx.submission.models import Submission
+
+from .models import SpeakerCareMessage
 
 
 class NoRecordingFilter(forms.Form):
@@ -25,3 +28,16 @@ class InternalNotesForm(forms.ModelForm):
     class Meta:
         model = Submission
         fields = ['internal_notes']
+
+
+class CareMessageForm(forms.ModelForm):
+
+    class Meta:
+        model = SpeakerCareMessage
+        fields = ['speaker', 'text']
+        widgets = {'speaker': EnhancedSelect()}
+
+    def __init__(self, *args, **kwargs):
+        speaker_queryset = kwargs.pop('speaker_queryset')
+        super().__init__(*args, **kwargs)
+        self.fields['speaker'].queryset = speaker_queryset

@@ -7,6 +7,8 @@ from pretalx.person.models.user import User
 from pretalx.schedule.models import TalkSlot
 from pretalx.submission.models import Submission, SubmissionStates
 
+from samaware.models import SpeakerCareMessage
+
 from .lib import SamawareTestCase
 
 
@@ -16,8 +18,8 @@ class ViewsTestCase(SamawareTestCase):
         super().setUp()
 
         self.client = Client()
-        admin = User.objects.get(email='admin@example.org')
-        self.client.force_login(admin)
+        self.admin = User.objects.get(email='admin@example.org')
+        self.client.force_login(self.admin)
 
 
 class DashboardTest(ViewsTestCase):
@@ -151,6 +153,121 @@ class NoRecordingListTest(ViewsTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['slots']), 1)
+
+
+class CareMessageTest(ViewsTestCase):
+
+    def setUp(self):
+        super().setUp()
+
+        with scope(event=self.event):
+            submission = Submission.objects.get(id=1, event=self.event)
+            self.speaker = submission.speakers.first()
+
+    def add_message(self):
+        with scope(event=self.event):
+            message = SpeakerCareMessage(event=self.event, author=self.admin, speaker=self.speaker,
+                                         text='This is an important announcement.')
+            message.save()
+
+        return message
+
+    def test_list(self):
+        path = reverse('plugins:samaware:care_message_list', kwargs={'event': self.event.slug})
+
+        response = self.client.get(path)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['care_messages']), 0)
+
+        self.add_message()
+
+        response = self.client.get(path)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['care_messages']), 1)
+        self.assertEqual(response.context['care_messages'][0].speaker, self.speaker)
+
+    def test_create(self):
+        path = reverse('plugins:samaware:care_message_create', kwargs={'event': self.event.slug})
+
+        response = self.client.get(path)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn('object', response.context)
+
+        text = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+        response = self.client.post(path, {'speaker': self.speaker.pk, 'text': text})
+        self.assertEqual(response.status_code, 302)
+
+        with scope(event=self.event):
+            messages = self.event.speaker_care_messages.all()
+
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].speaker, self.speaker)
+        self.assertEqual(messages[0].text, text)
+        self.assertEqual(messages[0].author, self.admin)
+
+    def test_update(self):
+        message = self.add_message()
+
+        path = reverse('plugins:samaware:care_message_update', kwargs={'event': self.event.slug,
+                                                                       'pk': message.pk})
+
+        response = self.client.get(path)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['object'], message)
+
+        text = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+        response = self.client.post(path, {'speaker': message.speaker.pk, 'text': text})  # pylint: disable=E1101
+        self.assertEqual(response.status_code, 302)
+
+        with scope(event=self.event):
+            messages = self.event.speaker_care_messages.all()
+
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].text, text)
+
+    def test_delete(self):
+        message = self.add_message()
+
+        path = reverse('plugins:samaware:care_message_delete', kwargs={'event': self.event.slug,
+                                                                       'pk': message.pk})
+
+        response = self.client.get(path)
+        self.assertEqual(response.status_code, 200)
+
+        with scope(event=self.event):
+            messages = self.event.speaker_care_messages.all()
+
+        self.assertEqual(len(messages), 1)
+
+        response = self.client.post(path)
+        self.assertEqual(response.status_code, 302)
+
+        with scope(event=self.event):
+            messages = self.event.speaker_care_messages.all()
+
+        self.assertEqual(len(messages), 0)
+
+    def test_no_permission(self):
+        self.client.logout()
+        self.client.force_login(self.speaker)
+
+        path = reverse('plugins:samaware:care_message_create', kwargs={'event': self.event.slug})
+        response = self.client.post(path, {'speaker': self.speaker.pk, 'text': 'Hello world'})
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_talk_overview(self):
+        self.add_message()
+        with scope(event=self.event):
+            submission = Submission.objects.filter(event=self.event, speakers=self.speaker).first()
+
+        path = reverse('plugins:samaware:talk_overview', kwargs={'event': self.event.slug,
+                                                                 'code': submission.code})
+        response = self.client.get(path)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['speaker_care_messages']), 1)
+        self.assertContains(response, 'Speaker Care Message available')
 
 
 class SearchFragmentTest(ViewsTestCase):

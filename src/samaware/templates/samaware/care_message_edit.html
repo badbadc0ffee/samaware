@@ -1,0 +1,40 @@
+{% extends "orga/base.html" %}
+
+{% load i18n %}
+
+{% block extra_title %}{% translate 'Speaker Care Message' %} :: SamAware :: {% endblock extra_title %}
+
+{% block content %}
+
+{% if object %}
+<h2>{% translate 'Speaker Care Message regarding' %} {{ object.speaker }}</h2>
+{% else %}
+<h2>{% translate 'New Speaker Care Message' %}</h2>
+{% endif %}
+
+<form method="POST" class="mt-3" novalidate="novalidate">
+    {% if object %}
+    <div class="row mb-3">
+        <div class="col-md-3 text-right pr-0"><strong>{% translate 'Author' %}</strong></div>
+        <div class="col-md-9">{{ object.author }}</div>
+    </div>
+    {% endif %}
+
+    {% csrf_token %}
+    {{ form }}
+
+    <div class="submit-group">
+        {% if object %}
+        <a href="{% url 'plugins:samaware:care_message_delete' event=object.event.slug pk=object.pk %}" class="btn btn-lg btn-danger">
+            {% translate 'Delete' %}
+        </a>
+        {% endif %}
+
+        <button type="submit" class="btn btn-lg btn-success ml-auto">
+            <i class="fa fa-check" aria-hidden="true"></i>
+            {% translate 'Save' %}
+        </button>
+    </div>
+</form>
+
+{% endblock content %}

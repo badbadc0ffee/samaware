@@ -26,5 +26,9 @@ def navbar_info(sender, request, **kwargs):  # noqa: ARG001, pylint: disable=W06
             'label': _('Talks without recording'),
             'url': reverse('plugins:samaware:no_recording', kwargs={'event': request.event.slug}),
             'active': url.namespace == 'plugins:samaware' and url.url_name == 'no_recording',
+        }, {
+            'label': _('Speaker Care Messages'),
+            'url': reverse('plugins:samaware:care_message_list', kwargs={'event': request.event.slug}),
+            'active': url.namespace == 'plugins:samaware' and url.url_name == 'care_message_list',
         }]
     }]
