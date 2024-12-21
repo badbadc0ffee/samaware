@@ -33,7 +33,7 @@ class DashboardTest(ViewsTestCase):
         self.assertEqual(len(response.context['slots_missing_speakers']), 2)
 
         # htmx requires this, see comment in "views.py" for details
-        self.assertIn("script-src 'self' 'unsafe-eval';", response.headers['Content-Security-Policy'])
+        self.assertIn("script-src 'self' 'unsafe-eval'", response.headers['Content-Security-Policy'])
 
 
 class TalkOverviewTest(ViewsTestCase):
