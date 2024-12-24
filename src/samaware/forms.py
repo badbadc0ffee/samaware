@@ -68,5 +68,10 @@ class CareMessageForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         speaker_queryset = kwargs.pop('speaker_queryset')
+        speaker_initial = kwargs.pop('speaker_initial', None)
+
         super().__init__(*args, **kwargs)
+
         self.fields['speaker'].queryset = speaker_queryset
+        if speaker_initial:
+            self.fields['speaker'].initial = speaker_initial

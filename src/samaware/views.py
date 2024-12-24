@@ -290,7 +290,15 @@ class CareMessageEdit(PermissionRequired, CreateOrUpdateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['speaker_queryset'] = self.request.event.speakers.order_by('name')
+
+        speaker_queryset = self.request.event.speakers
+        kwargs['speaker_queryset'] = speaker_queryset.order_by('name')
+
+        if not self.get_object() and 'speaker' in self.request.GET:
+            speaker = speaker_queryset.filter(code=self.request.GET['speaker']).first()
+            if speaker:
+                kwargs['speaker_initial'] = speaker
+
         return kwargs
 
     def form_valid(self, form):

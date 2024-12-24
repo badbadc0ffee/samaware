@@ -175,13 +175,25 @@
         {% with speaker_profile=speaker_profiles|get_item:speaker %}
         <div class="card samaware-card">
             <div class="card-body">
-                <h2 class="d-flex align-items-start">
-                    {{ speaker.name }}
-                    <a href="{{ speaker_profile.orga_urls.base }}" class="btn btn-sm btn-info ml-auto">
-                        <i class="fa fa fa fa-address-card" aria-hidden="true"></i>
-                        &nbsp;{% translate 'Show in Speaker View' %}
-                    </a>
-                </h2>
+                <div class="d-flex align-items-start">
+                    <h2>{{ speaker.name }}</h2>
+
+                    <details class="dropdown mt-3 ml-auto" role="menu" aria-haspopup="menu">
+                        <summary class="btn btn-outline-info">
+                            <i class="fa fa-caret-down" title="{% translate 'Open dropdown' %}"></i>
+                        </summary>
+                        <div class="dropdown-content dropdown-front dropdown-content-sw">
+                            <a href="{{ speaker_profile.orga_urls.base }}" class="dropdown-item" role="menuitem">
+                                <i class="fa fa-address-card" aria-hidden="true"></i>
+                                {% translate 'Show in Speaker View' %}
+                            </a>
+                            <a href="{% url 'plugins:samaware:care_message_create' submission.event.slug %}?speaker={{ speaker.code }}" class="dropdown-item" role="menuitem">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                                {% translate 'Add Speaker Care Message' %}
+                            </a>
+                        </div>
+                    </details>
+                </div>
 
                 <h3>{% translate 'Contact' %}</h3>
                 <a href="mailto:{{ speaker.email }}">{{ speaker.email }}</a>
