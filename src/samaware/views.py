@@ -340,7 +340,7 @@ class SearchFragment(EventPermissionRequired, TemplateView):
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
 
-        slots = self.request.event.wip_schedule.talks
+        slots = self.request.event.wip_schedule.talks.filter(submission__isnull=False)
         speakers = queries.get_all_speakers(self.request.event).select_related('user')
 
         query = self.request.GET.get('query')
@@ -348,7 +348,7 @@ class SearchFragment(EventPermissionRequired, TemplateView):
             users = speakers.filter(user__name__icontains=query).values_list('user', flat=True)
             slots = slots.filter(Q(submission__title__icontains=query) | Q(submission__speakers__in=users))
 
-        data['slots'] = slots.order_by('submission__title') \
+        data['slots'] = slots.order_by('submission__title').distinct() \
                              .select_related('submission', 'submission__track', 'submission__event', 'room')
         data['event_profiles'] = {profile.user: profile for profile in speakers}
 
