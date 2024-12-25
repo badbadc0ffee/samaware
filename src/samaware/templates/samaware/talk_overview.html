@@ -2,6 +2,7 @@
 
 {% load compress %}
 {% load event_tags %}
+{% load html_signal %}
 {% load i18n %}
 {% load rich_text %}
 {% load static %}
@@ -161,6 +162,8 @@
                 <em>{% translate 'None' %}</em>
                 {% endif %}
 
+                {% html_signal "samaware.signals.submission_html" sender=request.event request=request submission=submission %}
+
                 <h3>{% translate 'RT Ticket' %}</h3>
                 TODO
 
@@ -218,6 +221,9 @@
                 </ul>
                 {% endif %}
                 {% endwith %}
+
+                {% html_signal "samaware.signals.speaker_html" sender=request.event request=request user=speaker %}
+
             </div>
         </div>
         {% endwith %}

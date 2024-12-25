@@ -1,9 +1,13 @@
 from django.dispatch import receiver
 from django.urls import resolve, reverse
 from django.utils.translation import gettext_lazy as _
+from pretalx.common.signals import EventPluginSignal
 from pretalx.orga.signals import nav_event
 
 import samaware
+
+speaker_html = EventPluginSignal()
+submission_html = EventPluginSignal()
 
 
 @receiver(nav_event, dispatch_uid='samaware_nav')
