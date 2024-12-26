@@ -109,7 +109,7 @@ class TechRider(models.Model):
             self.sync_info['wekan_card_ids'] = {}
 
         for slot in self.event.wip_schedule.talks.filter(submission=self.submission):
-            time_str = slot.start.strftime('%Y-%m-%d - %H:%M')
+            time_str = slot.start.astimezone(self.event.tz).strftime('%Y-%m-%d - %H:%M')
             title = f'[{slot.room.name} - {time_str}] {self.submission.title}'
 
             labels = [str(slot.room.name)]
