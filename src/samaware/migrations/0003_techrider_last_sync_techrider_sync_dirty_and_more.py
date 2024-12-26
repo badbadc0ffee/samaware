@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("event", "0037_remove_event_accept_template_and_more"),
+        ("event", "0036_alter_event_header_image_alter_event_logo"),
         ("samaware", "0002_techrider"),
     ]
 
