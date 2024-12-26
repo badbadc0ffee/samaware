@@ -214,7 +214,9 @@ class WekanSyncer:
 
         if label_titles is not None:
             # We only ever add new labels, since we can't know which ones to remove
-            new_data['labelIds'] = old_data.get('labelIds', []) + target_data['labelIds']
+            new_label_ids = list(set(old_data.get('labelIds', []) + target_data['labelIds']))
+            if new_label_ids != old_data.get('labelIds', []):
+                new_data['labelIds'] = new_label_ids
 
         if not new_data:
             self.logger.info('Nothing changed, not updating this Card on Wekan: %s', card_id)
