@@ -4,7 +4,7 @@ from django_scopes.forms import SafeModelChoiceField
 from pretalx.common.forms.widgets import EnhancedSelect
 from pretalx.submission.models import Submission
 
-from .models import SpeakerCareMessage, TechRider
+from .models import SamAwareSettings, SpeakerCareMessage, TechRider
 
 
 class SubmissionChoiceField(SafeModelChoiceField):
@@ -75,3 +75,17 @@ class CareMessageForm(forms.ModelForm):
         self.fields['speaker'].queryset = speaker_queryset
         if speaker_initial:
             self.fields['speaker'].initial = speaker_initial
+
+
+class SamAwareSettingsForm(forms.ModelForm):
+
+    class Meta:
+        model = SamAwareSettings
+        fields = ['wekan_base_url', 'wekan_username', 'wekan_password', 'wekan_board_id', 'wekan_list_title',
+                  'wekan_swimlane_title']
+        widgets = {'wekan_password': forms.PasswordInput(render_value=True)}
+
+    def __init__(self, *args, **kwargs):
+        event = kwargs.pop('event')
+        self.instance, _ = SamAwareSettings.objects.get_or_create(event=event)
+        super().__init__(*args, **kwargs, instance=self.instance)

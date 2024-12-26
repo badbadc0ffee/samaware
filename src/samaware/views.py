@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
-from django.views.generic import DeleteView, DetailView, ListView, TemplateView, UpdateView
+from django.views.generic import DeleteView, DetailView, FormView, ListView, TemplateView, UpdateView
 from django_context_decorator import context
 from pretalx.common.templatetags.rich_text import rich_text as rich_text_filter
 from pretalx.common.views import CreateOrUpdateView
@@ -330,6 +330,25 @@ class CareMessageDelete(PermissionRequired, ActionConfirmMixin, DeleteView):
     @property
     def success_url(self):
         return reverse('plugins:samaware:care_message_list', kwargs={'event': self.get_object().event.slug})
+
+
+class SamAwareSettings(EventPermissionRequired, FormView):
+
+    permission_required = 'orga.change_settings'
+    form_class = forms.SamAwareSettingsForm
+    template_name = 'samaware/settings.html'
+
+    def get_success_url(self):
+        return self.request.path
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['event'] = self.request.event
+        return kwargs
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
 
 
 class SearchFragment(EventPermissionRequired, TemplateView):
