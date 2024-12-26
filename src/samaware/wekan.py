@@ -224,7 +224,8 @@ class WekanSyncer:
         new_data['newListId'] = old_data['listId']
         new_data['newSwimlaneId'] = old_data['swimlaneId']
 
-        path = urljoin(self.board_path, f'lists/{old_data['listId']}/cards/{card_id}')
+        list_id = old_data['listId']
+        path = urljoin(self.board_path, f'lists/{list_id}/cards/{card_id}')
         try:
             self.server.put(path, new_data, self.auth_token)
         except requests.RequestException:
