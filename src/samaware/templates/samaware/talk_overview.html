@@ -198,11 +198,11 @@
                 <h3>{% translate 'Attendance' %}</h3>
                 <form action="{% url 'orga:speakers.arrived' event=submission.event.slug code=speaker.code %}" method="GET" class="samaware-arrived-form">
                     {% if speaker_profile.has_arrived %}
-                    <button type="submit" class="samaware-btn btn btn-sm btn-success d-none">{% translate 'Mark as arrived' %}</button>
-                    <button type="submit" class="samaware-btn btn btn-sm btn-danger">{% translate 'Mark as not arrived' %}</button>
+                    <button type="submit" class="samaware-btn btn btn-sm btn-info d-none">{% translate 'Mark as arrived' %}</button>
+                    <button type="submit" class="samaware-btn btn btn-sm btn-success">{% blocktranslate %}Mark as <strong>not</strong> arrived{% endblocktranslate %}</button>
                     {% else %}
-                    <button type="submit" class="samaware-btn btn btn-sm btn-success">{% translate 'Mark as arrived' %}</button>
-                    <button type="submit" class="samaware-btn btn btn-sm btn-danger d-none">{% translate 'Mark as not arrived' %}</button>
+                    <button type="submit" class="samaware-btn btn btn-sm btn-info">{% translate 'Mark as arrived' %}</button>
+                    <button type="submit" class="samaware-btn btn btn-sm btn-success d-none">{% blocktranslate %}Mark as <strong>not</strong> arrived{% endblocktranslate %}</button>
                     {% endif %}
                 </form>
 
