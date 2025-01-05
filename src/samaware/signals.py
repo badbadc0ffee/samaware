@@ -25,7 +25,7 @@ def navbar_info(sender, request, **kwargs):  # noqa: ARG001, pylint: disable=W06
 
     return [{
         'label': 'SamAware',
-        'icon': 'samaware/icon.svg',
+        'icon': 'samaware/samovar.svg',
         'url': reverse('plugins:samaware:dashboard', kwargs={'event': request.event.slug}),
         'active': url.namespace == 'plugins:samaware',
         'children': [{
