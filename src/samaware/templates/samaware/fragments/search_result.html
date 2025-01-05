@@ -3,6 +3,7 @@
 {% load samaware_extras %}
 
 {% for slot in slots %}
+{% url 'plugins:samaware:talk_overview' event=request.event.slug code=slot.submission.code as talk_url %}
 <tr>
     <td class="text-center">
         {% if request.event|get_feature_flag:'use_tracks' and slot.submission.track %}
@@ -10,7 +11,7 @@
         {% endif %}
     </td>
     <td>
-        <a href="{% url 'plugins:samaware:talk_overview' event=request.event.slug code=slot.submission.code %}">{{ slot.submission.title }}</a>
+        <a href="{{ talk_url }}">{{ slot.submission.title }}</a>
     </td>
     <td>
         {% for speaker in slot.submission.speakers.all %}
@@ -22,7 +23,7 @@
         <i class="fa fa-times-circle-o text-danger" title="{% translate 'Not arrived' %}" aria-hidden="true"></i>
         <span class="sr-only">{% translate 'Not arrived' %}</span>
         {% endif %}
-        &nbsp;<a href="{{ speaker_profile.orga_urls.base }}">{{ speaker.name }}</a>
+        &nbsp;<a href="{{ talk_url }}">{{ speaker.name }}</a>
         {% endwith %}
         {% if not forloop.last %}<br/>{% endif %}
         {% endfor %}
