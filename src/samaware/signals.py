@@ -1,11 +1,12 @@
 import logging
 
+from django.contrib import messages
 from django.dispatch import receiver
 from django.urls import resolve, reverse
 from django.utils.translation import gettext_lazy as _
 from django_scopes import scopes_disabled
 from pretalx.common.signals import EventPluginSignal, minimum_interval, periodic_task
-from pretalx.orga.signals import nav_event, nav_event_settings
+from pretalx.orga.signals import html_head, nav_event, nav_event_settings
 
 import samaware
 
@@ -15,7 +16,26 @@ speaker_html = EventPluginSignal()
 submission_html = EventPluginSignal()
 
 
-@receiver(nav_event, dispatch_uid='samaware_nav')
+@receiver(html_head)
+def html_head(sender, request, **kwargs):
+    if request.resolver_match.url_name in [
+        "submissions.content.view",
+        "submissions.speakers.view",
+    ]:
+        submission = Submission.objects.get(code=request.resolver_match.kwargs["code"])
+        for speaker in submission.speakers.all():
+            messages.warning(
+                request, f"There could be speaker care messages for {speaker.name}."
+            )
+    if request.resolver_match.url_name == "speakers.view":
+        speaker = User.objects.get(code=request.resolver_match.kwargs["code"])
+        messages.warning(
+            request, f"This could be a speaker care message for {speaker.name}."
+        )
+    return ""
+
+
+@receiver(nav_event, dispatch_uid="samaware_nav")
 def navbar_info(sender, request, **kwargs):  # noqa: ARG001, pylint: disable=W0613
 
     if not request.user.has_perm(samaware.REQUIRED_PERMISSIONS, request.event):
