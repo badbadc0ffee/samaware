@@ -22,7 +22,7 @@
 {% block content %}
 
 <h2 class="d-flex align-items-center">
-    {{ slots.count }} {% translate 'Tech Riders' %}
+    <span>{{ slots.count }} {% translate 'Tech Riders' %}</span>
     <p class="ml-auto">
         <a href="{% url 'plugins:samaware:tech_rider_create' event=request.event.slug %}" class="btn btn-info  mt-2">
             <i class="fa fa-plus" aria-hidden="true"></i>

@@ -6,11 +6,19 @@
 
 {% block content %}
 
-{% if object %}
-<h2>{% translate 'Speaker Care Message regarding' %} {{ object.speaker }}</h2>
-{% else %}
-<h2>{% translate 'New Speaker Care Message' %}</h2>
-{% endif %}
+<h2 class="d-flex align-items-center">
+    {% if object %}
+    <span>{% translate 'Speaker Care Message regarding' %} {{ object.speaker }}</span>
+    <p class="ml-auto">
+        <a href="{{ speaker_profile.orga_urls.base }}" class="btn btn-outline-info mt-2">
+            <i class="fa fa-address-card" aria-hidden="true"></i>
+            &nbsp;{% translate 'Show Speaker' %}
+        </a>
+    </p>
+    {% else %}
+    <span>{% translate 'New Speaker Care Message' %}</span>
+    {% endif %}
+</h2>
 
 <form method="POST" class="mt-3" novalidate="novalidate">
     {% if object %}

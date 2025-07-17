@@ -310,6 +310,12 @@ class CareMessageEdit(PermissionRequired, CreateOrUpdateView):
 
         return HttpResponseRedirect(self.get_success_url())
 
+    @context
+    def speaker_profile(self):
+        if self.object is None:
+            return None
+        return self.object.speaker.event_profile(self.object.event)
+
 
 class CareMessageDelete(PermissionRequired, ActionConfirmMixin, DeleteView):
 

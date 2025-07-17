@@ -6,11 +6,19 @@
 
 {% block content %}
 
-{% if object %}
-<h2>{% translate 'Tech Rider for' %} {{ quotation_open }}{{ object.submission.title }}{{ quotation_close }}</h2>
-{% else %}
-<h2>{% translate 'New Tech Rider' %}</h2>
-{% endif %}
+<h2 class="d-flex align-items-center">
+    {% if object %}
+    <span>{% translate 'Tech Rider for' %} {{ quotation_open }}{{ object.submission.title }}{{ quotation_close }}</span>
+    <p class="ml-auto">
+        <a href="{% url 'plugins:samaware:talk_overview' event=request.event.slug code=object.submission.code %}" class="btn btn-outline-info mt-2">
+            <i class="fa fa-info-circle" aria-hidden="true"></i>
+            &nbsp;{% translate 'Show Talk' %}
+        </a>
+    </p>
+    {% else %}
+    <span>{% translate 'New Tech Rider' %}</span>
+    {% endif %}
+</h2>
 
 <form method="POST" class="mt-3" novalidate="novalidate">
     {% if object %}

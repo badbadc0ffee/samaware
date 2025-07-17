@@ -7,7 +7,7 @@
 {% block content %}
 
 <h2 class="d-flex align-items-center">
-    {{ care_messages.count }} {% translate 'Speaker Care Messages' %}
+    <span>{{ care_messages.count }} {% translate 'Speaker Care Messages' %}</span>
     <p class="ml-auto">
         <a href="{% url 'plugins:samaware:care_message_create' event=request.event.slug %}" class="btn btn-info  mt-2">
             <i class="fa fa-plus" aria-hidden="true"></i>
