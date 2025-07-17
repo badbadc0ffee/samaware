@@ -29,7 +29,7 @@ from . import forms, models, queries
 # We could probably do cool stuff with nonces (`htmx.config.inlineScriptNonce`), but that would require
 # nonces to be globally enabled for script-src from the pretalx config
 # Given that this is only 'unsafe-eval' (*not* 'unsafe-inline'), I can live with it for now
-@method_decorator(csp_update(SCRIPT_SRC="'unsafe-eval'"), name='dispatch')
+@method_decorator(csp_update({'script-src': ["'unsafe-eval'"]}), name='dispatch')
 class Dashboard(EventPermissionRequired, TemplateView):
 
     permission_required = samaware.REQUIRED_PERMISSIONS
