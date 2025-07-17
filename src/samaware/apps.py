@@ -17,4 +17,4 @@ class PluginApp(AppConfig):
         category = 'FEATURE'
 
     def ready(self):
-        from . import signals  # noqa: F401, pylint: disable=C0415, W0611
+        from . import signals  # noqa: F401, PLC0415, pylint: disable=C0415, W0611

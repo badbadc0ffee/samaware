@@ -70,8 +70,8 @@ def full_wekan_sync(sender, **kwargs):  # noqa: ARG001, pylint: disable=W0613
 
     def get_syncer(event):
         if (settings := models.SamAwareSettings.objects.filter(event=event).first()) is None:
-            logging.warning('Wekan settings not configured for event "%s", skipping Tech Rider sync',
-                            event.name)
+            logger.warning('Wekan settings not configured for event "%s", skipping Tech Rider sync',
+                           event.name)
             return None
 
         if (server := settings.get_wekan_server()) is None:
