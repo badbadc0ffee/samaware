@@ -34,7 +34,7 @@
         </a>
         <a href="{{ submission.orga_urls.base }}" class="btn btn-info mt-2">
             <i class="fa fa-sticky-note" aria-hidden="true"></i>
-            &nbsp;{% translate 'Show in Session View' %}
+            &nbsp;{% translate 'Edit Session' %}
         </a>
     </p>
 </h2>
@@ -182,7 +182,7 @@
                         <div class="dropdown-content dropdown-front dropdown-content-sw">
                             <a href="{{ speaker_profile.orga_urls.base }}" class="dropdown-item" role="menuitem">
                                 <i class="fa fa-address-card" aria-hidden="true"></i>
-                                {% translate 'Show in Speaker View' %}
+                                {% translate 'Edit Speaker' %}
                             </a>
                             <a href="{% url 'plugins:samaware:care_message_create' submission.event.slug %}?speaker={{ speaker.code }}" class="dropdown-item" role="menuitem">
                                 <i class="fa fa-plus" aria-hidden="true"></i>
