@@ -289,8 +289,8 @@ class CareMessageTest(ViewsTestCase):
         super().setUp()
 
         with scope(event=self.event):
-            submission = Submission.objects.get(id=1, event=self.event)
-            self.speaker = submission.speakers.first()
+            self.submission = Submission.objects.get(id=1, event=self.event)
+            self.speaker = self.submission.speakers.first()
 
     def add_message(self):
         with scope(event=self.event):
@@ -311,8 +311,34 @@ class CareMessageTest(ViewsTestCase):
 
         response = self.client.get(path)
         self.assertEqual(response.status_code, 200)
+
         self.assertEqual(len(response.context['care_messages']), 1)
         self.assertEqual(response.context['care_messages'][0].speaker, self.speaker)
+        self.assertEqual(len(response.context['speaker_talks'][self.speaker]), 1)
+        self.assertEqual(response.context['speaker_talks'][self.speaker][0], self.submission)
+        self.assertEqual(response.context['speaker_first_slots'][self.speaker].submission, self.submission)
+
+    def test_list_sort(self):
+        self.add_message()
+
+        with scope(event=self.event):
+            speaker_2 = User.objects.get(id=5)
+            message_2 = SpeakerCareMessage(event=self.event, author=self.admin, speaker=speaker_2,
+                                         text='Another very important announcement.')
+            message_2.save()
+
+        path = reverse('plugins:samaware:care_message_list', kwargs={'event': self.event.slug})
+
+        response = self.client.get(path + '?sort=-_first_talk_start')
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(len(response.context['care_messages']), 2)
+        self.assertGreater(
+            response.context['speaker_first_slots'][response.context['care_messages'][0].speaker].start,
+            response.context['speaker_first_slots'][response.context['care_messages'][1].speaker].start
+        )
+        self.assertEqual(response.context['care_messages'][0].text, 'Another very important announcement.')
+        self.assertEqual(response.context['care_messages'][1].text, 'This is an important announcement.')
 
     def test_create(self):
         path = reverse('plugins:samaware:care_message_create', kwargs={'event': self.event.slug})

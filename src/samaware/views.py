@@ -1,4 +1,5 @@
 import datetime
+from functools import cached_property
 
 from csp.decorators import csp_update
 from django.db.models import Q
@@ -250,16 +251,50 @@ class TechRiderDelete(PermissionRequired, ActionConfirmMixin, DeleteView):
         return reverse('plugins:samaware:tech_rider_list', kwargs={'event': self.get_object().event.slug})
 
 
-class CareMessageList(EventPermissionRequired, ListView):
+class CareMessageList(EventPermissionRequired, Sortable, ListView):
 
     permission_required = samaware.REQUIRED_PERMISSIONS
+    sortable_fields = ('speaker__name', '_first_talk_start')
+    default_sort_field = 'speaker__name'
     template_name = 'samaware/care_message_list.html'
     # "messages" is already used globally
     context_object_name = 'care_messages'
 
     def get_queryset(self):
         messages = models.SpeakerCareMessage.objects.filter(event=self.request.event)
-        return messages.order_by('speaker__name').select_related('speaker')
+        # Do *not* call `sort_queryset()` here in order to already have a queryset (`self.object_list`)
+        # available during sorting itself, which is required to sort by "first_talk_start"
+        return messages.select_related('speaker')
+
+    def sort_queryset(self, qs):
+        sort_key = self.request.GET.get('sort', '')
+        reverse_sort = sort_key.startswith('-')
+        plain_key = sort_key[1:] if reverse_sort else sort_key
+
+        if plain_key == '_first_talk_start':
+            return sorted(qs, key=lambda m: self.speaker_first_slots[m.speaker].start, reverse=reverse_sort)
+
+        return super().sort_queryset(qs)
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        # Sort here, reasoning see above
+        context_data[self.context_object_name] = self.sort_queryset(self.object_list)
+        return context_data
+
+    @context
+    def speaker_talks(self):
+        return queries.talks_for_speakers(self.speakers_with_message, self.request.event)
+
+    # "please make sure to add the `@context` decorator above the `@cached_property` decorator"
+    @context
+    @cached_property
+    def speaker_first_slots(self):
+        return queries.first_slot_for_speakers(self.speakers_with_message, self.request.event)
+
+    @cached_property
+    def speakers_with_message(self):
+        return [msg.speaker for msg in self.object_list]
 
 
 class CareMessageEdit(PermissionRequired, CreateOrUpdateView):

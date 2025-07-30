@@ -86,6 +86,32 @@ def get_unreleased_changes_for_submission(submission):
     return list(chain(new_changes, canceled_changes, moved_changes))
 
 
+def talks_for_speakers(speakers, event):
+    """
+    Given an iterable of speakers (Users), returns a dict with the talks (Submissions) from an event's
+    current WiP Schedule per speaker.
+    """
+
+    slots = event.wip_schedule.talks.select_related('submission').prefetch_related('submission__speakers')
+
+    return {
+        speaker: [slot.submission for slot in slots.filter(submission__speakers=speaker)]
+    for speaker in speakers}
+
+
+def first_slot_for_speakers(speakers, event):
+    """
+    Given an iterable of speakers (Users), returns a dict with the first talk TalkSlot from an event's
+    current WiP Schedule per speaker. The first TalkSlot is the one scheduled for the earliest start time.
+    """
+
+    slots = event.wip_schedule.talks.order_by('start').select_related('submission') \
+                                                      .prefetch_related('submission__speakers')
+    return {
+        speaker: slots.filter(submission__speakers=speaker).first()
+    for speaker in speakers}
+
+
 def get_talks_in_other_events(user, event):
     """
     Returns a list of accepted Submissions where the given User is among the speakers, across all public

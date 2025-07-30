@@ -102,6 +102,27 @@ class QueriesTest(SamawareTestCase):
 
         self.assertEqual(len(slots), 1)
 
+    def test_talks_for_speakers(self):
+        with scope(event=self.event):
+            kelly = SpeakerProfile.objects.get(id=1).user
+            adam = SpeakerProfile.objects.get(id=4).user
+            talks = queries.talks_for_speakers([kelly, adam], self.event)
+
+        self.assertEqual(len(talks), 2)
+        self.assertEqual(len(talks[kelly]), 1)
+        self.assertEqual(talks[kelly][0].title, 'Re-contextualized 5thgeneration help-desk')
+        self.assertEqual(len(talks[adam]), 2)
+
+    def test_first_slot_for_speakers(self):
+        with scope(event=self.event):
+            kelly = SpeakerProfile.objects.get(id=1).user
+            adam = SpeakerProfile.objects.get(id=4).user
+            slots = queries.first_slot_for_speakers([kelly, adam], self.event)
+
+        self.assertEqual(len(slots), 2)
+        self.assertEqual(slots[kelly].id, 13)
+        self.assertEqual(slots[adam].id, 16)
+
     def test_talks_in_other_events(self):
         with scopes_disabled():
             # Do a new query to get an independent reference
