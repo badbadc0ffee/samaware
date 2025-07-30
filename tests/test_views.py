@@ -359,6 +359,15 @@ class CareMessageTest(ViewsTestCase):
         self.assertEqual(messages[0].text, text)
         self.assertEqual(messages[0].author, self.admin)
 
+    def test_create_initial(self):
+        path = reverse('plugins:samaware:care_message_create', kwargs={'event': self.event.slug})
+
+        response = self.client.get(path + f'?speaker={self.speaker.code}')
+        self.assertEqual(response.status_code, 200)
+
+        self.assertNotIn('object', response.context)
+        self.assertEqual(response.context['form'].fields['speaker'].initial, self.speaker)
+
     def test_update(self):
         message = self.add_message()
 
