@@ -7,7 +7,7 @@ from pretalx.person.models.user import User
 from pretalx.schedule.models import TalkSlot
 from pretalx.submission.models import Submission, SubmissionStates
 
-from samaware.models import SpeakerCareMessage, TechRider
+from samaware.models import SamAwareSettings, SpeakerCareMessage, TechRider
 
 from .lib import SamawareTestCase
 
@@ -413,6 +413,62 @@ class CareMessageTest(ViewsTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['speaker_care_messages']), 1)
         self.assertContains(response, 'Speaker Care Message available')
+
+
+class SamAwareSettingsTest(ViewsTestCase):
+
+    def setUp(self):
+        super().setUp()
+
+        self.path = reverse('plugins:samaware:settings', kwargs={'event': self.event.slug})
+        self.post_data = {
+            'wekan_base_url': 'https://www.example.org',
+            'wekan_username': 'samaware-bot',
+            'wekan_password': 'topsecret',
+            'wekan_board_id': 'abc42',
+            'wekan_list_title': 'Incoming',
+            'wekan_swimlane_title': 'Default'
+        }
+
+    def test_create(self):
+        with scope(event=self.event):
+            settings = SamAwareSettings.objects.all()
+
+        self.assertEqual(len(settings), 0)
+
+        response = self.client.get(self.path)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.post(self.path, self.post_data)
+        self.assertEqual(response.status_code, 302)
+
+        with scope(event=self.event):
+            settings = SamAwareSettings.objects.all()
+
+        self.assertEqual(len(settings), 1)
+        self.assertEqual(settings[0].wekan_username, 'samaware-bot')
+        self.assertEqual(settings[0].wekan_list_title, 'Incoming')
+
+    def test_update(self):
+        response = self.client.post(self.path, self.post_data)
+        self.assertEqual(response.status_code, 302)
+
+        new_data = {**self.post_data, 'wekan_list_title': 'Brand new'}
+        response = self.client.post(self.path, new_data)
+        self.assertEqual(response.status_code, 302)
+
+        with scope(event=self.event):
+            settings = SamAwareSettings.objects.all()
+
+        self.assertEqual(len(settings), 1)
+        self.assertEqual(settings[0].wekan_list_title, 'Brand new')
+
+    def test_no_permission(self):
+        self.client.logout()
+        self.client.force_login(User.objects.get(id=2))
+
+        response = self.client.post(self.path, self.post_data)
+        self.assertEqual(response.status_code, 404)
 
 
 class SearchFragmentTest(ViewsTestCase):
