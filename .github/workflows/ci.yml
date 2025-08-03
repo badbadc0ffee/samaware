@@ -1,0 +1,100 @@
+name: CI
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  lint:
+    name: Lint soure code
+    runs-on: ubuntu-latest
+    container: python:3.13-bookworm
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup packages
+        run: |
+          pip install pretalx==2025.1.0
+          pip install -e .[dev]
+      - run: make lint
+
+  test_legacy:
+    name: Test with known-good pretalx release and minimal supported Python
+    runs-on: ubuntu-latest
+    container: python:3.10-bookworm
+    permissions:
+      # Required for "EnricoMi/publish-unit-test-result-action"
+      checks: write
+    steps:
+      - uses: actions/checkout@v4
+      # REVISIT: Actually use pretalx release
+      # Currently disabled because of unreleased migration to django-csp 4
+      #- name: pip install pretalx==2025.1.0
+      - name: Install pretalx from known-good Git commit (as workaround)
+        working-directory: /tmp
+        run: |
+          apt-get --yes update
+          apt-get --yes install git
+          git clone https://github.com/pretalx/pretalx.git
+          cd pretalx
+          git checkout 22e2cb44a
+          pip install .
+      - run: pip install -e .[dev]
+      - run: ./setup_vendored.py
+      - name: Collect and compress assets
+        run: |
+          django-admin collectstatic --noinput
+          django-admin compress
+        env:
+          DJANGO_SETTINGS_MODULE: pretalx.settings
+      - run: pytest --junitxml=pytest-results.xml tests
+      - name: Publish test results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: pytest-results.xml
+          comment_mode: "off"
+      - name: Archive test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pytest-results-legacy
+          path: pytest-results.xml
+          if-no-files-found: error
+
+  test_head:
+    name: Test with current pretalx HEAD and recent Python
+    runs-on: ubuntu-latest
+    container: python:3.13-bookworm
+    permissions:
+      checks: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pretalx from Git
+        working-directory: /tmp
+        run: |
+          apt-get --yes update
+          apt-get --yes install git
+          git clone https://github.com/pretalx/pretalx.git
+          pip install ./pretalx
+      - run: pip install -e .[dev]
+      - run: ./setup_vendored.py
+      - name: Collect and compress assets
+        run: |
+          django-admin collectstatic --noinput
+          django-admin compress
+        env:
+          DJANGO_SETTINGS_MODULE: pretalx.settings
+      - run: pytest --junitxml=pytest-results.xml tests
+      - name: Publish test results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: pytest-results.xml
+          comment_mode: "off"
+      - name: Archive test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pytest-results-head
+          path: pytest-results.xml
+          if-no-files-found: error
