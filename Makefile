@@ -1,24 +1,25 @@
 SOURCE_DIR ?= src
 TESTS_DIR ?= tests
 
-.PHONY: run test lint
+.PHONY: build run test lint clean
 
-build: pyproject.toml $(SOURCE_DIR) src/samaware/static/samaware/vendor/htmx.min.js
-	python3 setup.py build
+build: pyproject.toml $(SOURCE_DIR)
+	python3 -m build
 
-run: src/samaware/static/samaware/vendor/htmx.min.js
+run: src/samaware/static/samaware/vendor
 	DJANGO_SETTINGS_MODULE=pretalx.settings django-admin runserver
 
 test:
 	DJANGO_SETTINGS_MODULE=pretalx.settings django-admin test $(TESTS_DIR)
 
 lint:
-	ruff check $(SOURCE_DIR) $(TESTS_DIR)
+	ruff check $(SOURCE_DIR) $(TESTS_DIR) setup_vendored.py
 	# Also use pylint for now, until Ruff supports multi-file analysis
-	pylint $(SOURCE_DIR) $(TESTS_DIR)
+	pylint $(SOURCE_DIR) $(TESTS_DIR) setup_vendored.py
 
 src/samaware/static/samaware/vendor:
-	mkdir -p $@
+	./setup_vendored.py
 
-src/samaware/static/samaware/vendor/htmx.min.js: src/samaware/static/samaware/vendor
-	curl -L https://unpkg.com/htmx.org@2.0.4/dist/htmx.min.js -o $@
+clean:
+	rm -rf build dist src/samaware.egg-info
+	rm -rf src/samaware/static/samaware/vendor
