@@ -17,7 +17,7 @@ readme = "README.md"
 dependencies = ["django-context-decorator", "django-csp>=4.0", "django-scopes", "requests"]
 
 [project.optional-dependencies]
-dev = ["ruff", "pylint"]
+dev = ["ruff", "pylint", "pytest", "pytest-django"]
 
 [project.urls]
 homepage = "https://github.com/f30/samaware"
@@ -79,3 +79,7 @@ expected-line-ending-format = "LF"
 
 [tool.pylint.spelling]
 generated-members = ["objects", "id", "request", "DoesNotExist"]
+
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "pretalx.settings"

@@ -10,7 +10,7 @@ run: src/samaware/static/samaware/vendor
 	DJANGO_SETTINGS_MODULE=pretalx.settings django-admin runserver
 
 test:
-	DJANGO_SETTINGS_MODULE=pretalx.settings django-admin test $(TESTS_DIR)
+	DJANGO_SETTINGS_MODULE=pretalx.settings pytest $(TESTS_DIR)
 
 lint:
 	ruff check $(SOURCE_DIR) $(TESTS_DIR) setup_vendored.py
