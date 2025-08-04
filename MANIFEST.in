@@ -1,1 +1,1 @@
-include setup_vendored.py
+include build_vendored.py

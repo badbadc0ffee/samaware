@@ -13,12 +13,12 @@ test:
 	DJANGO_SETTINGS_MODULE=pretalx.settings pytest $(TESTS_DIR)
 
 lint:
-	ruff check $(SOURCE_DIR) $(TESTS_DIR) setup_vendored.py
+	ruff check $(SOURCE_DIR) $(TESTS_DIR) build_vendored.py
 	# Also use pylint for now, until Ruff supports multi-file analysis
-	pylint $(SOURCE_DIR) $(TESTS_DIR) setup_vendored.py
+	pylint $(SOURCE_DIR) $(TESTS_DIR) build_vendored.py
 
 src/samaware/static/samaware/vendor:
-	./setup_vendored.py
+	./build_vendored.py
 
 clean:
 	rm -rf build dist src/samaware.egg-info

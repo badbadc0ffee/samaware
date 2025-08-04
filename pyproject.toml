@@ -1,7 +1,7 @@
 [build-system]
 requires = ["setuptools"]
 backend-path = ["."]
-build-backend = "setup_vendored"
+build-backend = "build_vendored"
 
 [project]
 name = "samaware"
