@@ -98,3 +98,18 @@ jobs:
           name: pytest-results-head
           path: pytest-results.xml
           if-no-files-found: error
+
+  build:
+    name: Execute project build
+    runs-on: ubuntu-latest
+    container: python:3.13-bookworm
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install build
+      - run: make build
+      - name: Archive build results
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-dist
+          path: dist/*
+          if-no-files-found: error
