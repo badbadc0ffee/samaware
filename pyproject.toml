@@ -31,7 +31,7 @@ samaware = "samaware:PretalxPluginMeta"
 where = "src"
 
 [tool.setuptools.package-data]
-"*" = ["*.html", "*.css", "*.js"]
+"*" = ["*.html", "*.css", "*.js", "*.svg"]
 
 [tool.setuptools.dynamic]
 version = {attr = "samaware.__version__"}
