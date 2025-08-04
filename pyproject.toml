@@ -6,14 +6,20 @@ build-backend = "build_vendored"
 [project]
 name = "samaware"
 description = "pretalx plugin with enhanced features for speaker care during a conference"
-keywords = ["pretalx"]
 dynamic = ["version"]
 authors = [
   {name = "Felix Dreissig", email = "f30@f30.me"},
 ]
 license = "ISC"
 readme = "README.md"
-
+keywords = ["pretalx", "conference", "event", "plugin"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Web Environment",
+  "Framework :: Django",
+  "Topic :: Internet :: WWW/HTTP :: Dynamic Content"
+]
+requires-python = ">= 3.10"
 dependencies = ["django-context-decorator", "django-csp>=4.0", "django-scopes", "requests"]
 
 [project.optional-dependencies]
@@ -22,7 +28,7 @@ dev = ["ruff", "pylint", "pytest", "pytest-django"]
 [project.urls]
 homepage = "https://github.com/f30/samaware"
 repository = "https://github.com/f30/samaware.git"
-Issues = "https://github.com/f30/spam/issues"
+Issues = "https://github.com/f30/samaware/issues"
 
 [project.entry-points."pretalx.plugin"]
 samaware = "samaware:PretalxPluginMeta"
