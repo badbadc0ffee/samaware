@@ -12,7 +12,11 @@ jobs:
     container: python:3.13-bookworm
     steps:
       - uses: actions/checkout@v4
-      - run: pip install build
+      - name: Install build dependencies
+        run: |
+          apt-get --yes update
+          apt-get --yes install curl
+          pip install build
       - run: make build
       - name: Store build results
         uses: actions/upload-artifact@v4
